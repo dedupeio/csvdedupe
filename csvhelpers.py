@@ -42,7 +42,7 @@ def readData(filename):
     return data_d
 
 # ## Writing Results
-def writeResults(clustered_dupes, input_file):
+def writeResults(clustered_dupes, input_file, output_file):
 
     # Write our original data back out to a CSV with a new column called 
     # 'Cluster ID' which indicates which records refer to each other.
@@ -52,7 +52,6 @@ def writeResults(clustered_dupes, input_file):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
 
-    output_file = input_file.replace('.','_cleaned.')
     with open(output_file, 'w') as f:
         writer = csv.writer(f)
 
