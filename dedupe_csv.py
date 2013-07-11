@@ -55,7 +55,7 @@ def main(args):
     print 'reading labeled examples from ', args.training_file
     deduper.train(data_sample, args.training_file)
   elif args.skip_training:
-    raise KeyError("You need to provide an existing training_file or run this script without --skip_training")
+    raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
   if args.skip_training == False:
     print 'starting active labeling...'
