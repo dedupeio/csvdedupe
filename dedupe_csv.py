@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import argparse
 import os
 
@@ -34,6 +36,7 @@ def main(args):
   print 'imported', len(data_d), 'rows'
 
   # Set up our data sample and fields to pass to dedupe
+  print 'taking a sample of', args.sample_size, 'possible pairs'
   data_sample = dedupe.dataSample(data_d, args.sample_size)
 
   fields = {}
@@ -59,7 +62,10 @@ def main(args):
     deduper.train(data_sample, dedupe.training.consoleLabel)
 
     # When finished, save our training away to disk
+    print 'saving training data to', args.training_file
     deduper.writeTraining(args.training_file)
+  else:
+    print 'skipping the training step'
 
   # ## Blocking
 
@@ -83,6 +89,7 @@ def main(args):
   # If we had more data, we would not pass in all the blocked data into
   # this function but a representative sample.
 
+  print 'finding a good threshold with a recall_weight of', args.recall_weight
   threshold = deduper.goodThreshold(blocked_data, recall_weight=args.recall_weight)
 
   # `duplicateClusters` will return sets of record IDs that dedupe
