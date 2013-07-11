@@ -12,8 +12,6 @@ parser.add_argument('output_file', type=str,
 parser.add_argument('field_names', type=str,
                     help='List of column names for dedupe to pay attention to')
 
-args = parser.parse_args()
-
 def main(args):
 
   # import the specified CSV file
@@ -71,5 +69,5 @@ def main(args):
   csvhelpers.writeResults(clustered_dupes, args.input_file, args.output_file)
 
 if __name__ == '__main__':
-  args = parse_args()
+  args = parser.parse_args()
   main(args)
