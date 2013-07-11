@@ -36,7 +36,7 @@ def main(args):
   try:
     data_d = csvhelpers.readData(args.input_file)
   except IOError:
-    raise parser.error("Could not find" + args.input_file + '. Did you name it correctly?')
+    raise parser.error("Could not find the file " + args.input_file + '. Did you name it correctly?')
 
   print 'imported', len(data_d), 'rows'
 
