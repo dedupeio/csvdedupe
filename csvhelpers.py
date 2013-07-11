@@ -41,11 +41,13 @@ def readData(filename):
 
     return data_d
 
-# ## Writing Results
+# ## Writing results
 def writeResults(clustered_dupes, input_file, output_file):
 
     # Write our original data back out to a CSV with a new column called 
     # 'Cluster ID' which indicates which records refer to each other.
+
+    print 'saving results to:', output_file
 
     cluster_membership = collections.defaultdict(lambda : 'x')
     for (cluster_id, cluster) in enumerate(clustered_dupes):
@@ -67,3 +69,35 @@ def writeResults(clustered_dupes, input_file, output_file):
                 cluster_id = cluster_membership[row_id]
                 row.insert(0, cluster_id)
                 writer.writerow(row)
+
+# ## Printing results to stdout
+def printResults(clustered_dupes, input_file):
+
+    # Write our original data back out to a CSV with a new column called 
+    # 'Cluster ID' which indicates which records refer to each other.
+
+    cluster_membership = collections.defaultdict(lambda : 'x')
+    for (cluster_id, cluster) in enumerate(clustered_dupes):
+        for record_id in cluster:
+            cluster_membership[record_id] = cluster_id
+
+    with open(input_file) as f_input :
+        reader = csv.reader(f_input)
+
+        heading_row = reader.next()
+        heading_row.insert(0, 'Cluster ID')
+        _printClusterRow(heading_row)
+
+        for row in reader:
+            row_id = int(row[0])
+            cluster_id = cluster_membership[row_id]
+            row.insert(0, cluster_id)
+            _printClusterRow(row)
+
+
+def _printClusterRow(row):
+    result_str = ''
+    for value in row:
+        result_str += (str(value) + ',')
+
+    print result_str

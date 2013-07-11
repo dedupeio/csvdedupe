@@ -4,32 +4,41 @@ import os
 import csvhelpers
 import dedupe
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+  formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
 
+# required arguments
 parser.add_argument('input_file', type=str, 
                     help='CSV file to deduplicate')
-parser.add_argument('output_file', type=str, default=None,
+parser.add_argument('field_names', type=str,
+                    help='List of column names for dedupe to pay attention to')
+
+# optional arguments
+parser.add_argument('--output_file', type=str, default=None,
                     help='CSV file to store deduplication results')
 parser.add_argument('--training_file', type=str, default='training.json',
                     help='Path to a new or existing file consisting of labeled training examples')
-parser.add_argument('field_names', type=str,
-                    help='List of column names for dedupe to pay attention to')
+parser.add_argument('--sample_size', type=int, default=150000,
+                    help='Number of random sample pairs to train off of')
+parser.add_argument('--recall_weight', type=int, default=2,
+                    help='Threshold that will maximize a weighted average of our precision and recall')
 
 def main(args):
 
   # import the specified CSV file
-  print 'Reading', args.input_file, '...'
+  print 'reading', args.input_file, '...'
   data_d = csvhelpers.readData(args.input_file)
-  print 'Imported', len(data_d), 'rows'
+  print 'imported', len(data_d), 'rows'
 
   # Set up our data sample and fields to pass to dedupe
-  data_sample = dedupe.dataSample(data_d, 150000)
+  data_sample = dedupe.dataSample(data_d, args.sample_size)
 
   fields = {}
   for field in args.field_names.split(','):
     fields[field] = {'type': 'String'}
 
-  print 'Using fields:', fields
+  print 'using fields:', fields
 
   # # Create a new deduper object and pass our data model to it.
   deduper = dedupe.Dedupe(fields)
@@ -69,7 +78,7 @@ def main(args):
   # If we had more data, we would not pass in all the blocked data into
   # this function but a representative sample.
 
-  threshold = deduper.goodThreshold(blocked_data, recall_weight=2)
+  threshold = deduper.goodThreshold(blocked_data, recall_weight=args.recall_weight)
 
   # `duplicateClusters` will return sets of record IDs that dedupe
   # believes are all referring to the same entity.
@@ -79,7 +88,12 @@ def main(args):
 
   print '# duplicate sets', len(clustered_dupes)
 
-  csvhelpers.writeResults(clustered_dupes, args.input_file, args.output_file)
+  # write out our results
+  output_file = args.output_file
+  if output_file == None:
+    output_file = args.input_file.replace('.','_cleaned.')
+
+  csvhelpers.writeResults(clustered_dupes, args.input_file, output_file)
 
 if __name__ == '__main__':
   args = parser.parse_args()
