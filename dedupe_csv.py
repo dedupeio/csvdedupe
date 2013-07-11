@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import csvhelpers
 import dedupe
@@ -7,8 +8,10 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('input_file', type=str, 
                     help='CSV file to deduplicate')
-parser.add_argument('output_file', type=str, 
+parser.add_argument('output_file', type=str, default=None,
                     help='CSV file to store deduplication results')
+parser.add_argument('--training_file', type=str, default='training.json',
+                    help='Path to a new or existing file consisting of labeled training examples')
 parser.add_argument('field_names', type=str,
                     help='List of column names for dedupe to pay attention to')
 
@@ -31,8 +34,18 @@ def main(args):
   # # Create a new deduper object and pass our data model to it.
   deduper = dedupe.Dedupe(fields)
 
+  # If we have training data saved from a previous run of dedupe,
+  # look for it an load it in.
+  # __Note:__ if you want to train from scratch, delete the training_file
+  if os.path.exists(args.training_file):
+      print 'reading labeled examples from ', args.training_file
+      deduper.train(data_sample, args.training_file)
+
   print 'starting active labeling...'
   deduper.train(data_sample, dedupe.training.consoleLabel)
+
+  # When finished, save our training away to disk
+  deduper.writeTraining(args.training_file)
 
   # ## Blocking
 
