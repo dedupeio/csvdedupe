@@ -1,0 +1,15 @@
+build
+docs
+*.pyc
+logfile
+*.*~
+*.o
+*.so
+*.py.*
+*.*gz
+*.html
+.#*
+*.*#
+*.json
+*.db
+.DS_Store
