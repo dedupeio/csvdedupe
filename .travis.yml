@@ -1,0 +1,14 @@
+branches:
+  only:
+    - master
+
+language: python
+notifications:
+  email: false
+python:
+  - "2.7"
+  - "2.6"
+install:
+  - pip install --use-mirrors -r requirements.txt 
+# command to run tests, e.g. python setup.py test
+script: nosetests
