@@ -18,7 +18,7 @@ parser.add_argument('field_names', type=str,
 parser.add_argument('--output_file', type=str, default=None,
                     help='CSV file to store deduplication results')
 parser.add_argument('--skip_training', action='store_true',
-                    help='User will provide labeled examples for active learning')
+                    help='Skip labeling examples by user and read training from training_file only')
 parser.add_argument('--training_file', type=str, default='training.json',
                     help='Path to a new or existing file consisting of labeled training examples')
 parser.add_argument('--sample_size', type=int, default=150000,
@@ -52,7 +52,7 @@ def main(args):
     print 'reading labeled examples from ', args.training_file
     deduper.train(data_sample, args.training_file)
   elif args.skip_training:
-    raise KeyError("You need to provide an existing training file or run this script with --train")
+    raise KeyError("You need to provide an existing training_file or run this script without --skip_training")
 
   if args.skip_training == False:
     print 'starting active labeling...'
