@@ -1,5 +1,6 @@
 pexpect
 argparse
+simplejson
 
 # ====================
 # Dedupe
