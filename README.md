@@ -1,6 +1,7 @@
 # Dedupe CSV
 
 Command line tool for deduplicating CSV files.
+
 [![Build Status](https://travis-ci.org/datamade/dedupe-csv.png?branch=master)](https://travis-ci.org/datamade/dedupe-csv)
 
 ## Installation
