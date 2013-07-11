@@ -1,57 +1,67 @@
 import argparse
-import os
-import csv
-import re
-import collections
-import logging
 
-import AsciiDammit
+import csvhelpers
 import dedupe
-
-def preProcess(column):
-    """
-    Do a little bit of data cleaning with the help of [AsciiDammit](https://github.com/tnajdek/ASCII--Dammit) 
-    and Regex. Things like casing, extra spaces, quotes and new lines can be ignored.
-    """
-
-    column = AsciiDammit.asciiDammit(column)
-    column = re.sub('  +', ' ', column)
-    column = re.sub('\n', ' ', column)
-    column = column.strip().strip('"').strip("'").lower().strip()
-    return column
-
-
-def readData(filename):
-    """
-    Read in our data from a CSV file and create a dictionary of records, 
-    where the key is a unique record ID and each value is a 
-    [frozendict](http://code.activestate.com/recipes/414283-frozen-dictionaries/) 
-    (hashable dictionary) of the row fields.
-
-    **Currently, dedupe depends upon records' unique ids being integers
-    with no integers skipped. The smallest valued unique id must be 0 or
-    1. Expect this requirement will likely be relaxed in the future.**
-    """
-
-    data_d = {}
-    with open(filename) as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-            row_id = int(row['Id'])
-            data_d[row_id] = dedupe.core.frozendict(clean_row)
-
-    return data_d
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('input_file', type=str,
+parser.add_argument('input_file', type=str, 
                     help='CSV file to deduplicate')
+parser.add_argument('field_names', type=str,
+                    help='List of column names for dedupe to pay attention to')
 
 args = parser.parse_args()
 
-print 'Reading', args.input_file
+# import the specified CSV file
+print 'Reading', args.input_file, '...'
+data_d = csvhelpers.readData(args.input_file)
+print 'Imported', len(data_d), 'rows'
 
-print 'importing data ...'
-data_d = readData(args.input_file)
-print len(data_d)
+# Set up our data sample and fields to pass to dedupe
+data_sample = dedupe.dataSample(data_d, 150000)
+
+fields = {}
+for field in args.field_names.split(','):
+  fields[field] = {'type': 'String'}
+
+print 'Using fields:', fields
+
+# # Create a new deduper object and pass our data model to it.
+deduper = dedupe.Dedupe(fields)
+
+print 'starting active labeling...'
+deduper.train(data_sample, dedupe.training.consoleLabel)
+
+# ## Blocking
+
+print 'blocking...'
+# Initialize our blocker. We'll learn our blocking rules if we haven't
+# loaded them from a saved settings file.
+blocker = deduper.blockingFunction()
+
+# Load all the original data in to memory and place
+# them in to blocks. Each record can be blocked in many ways, so for
+# larger data, memory will be a limiting factor.
+
+blocked_data = dedupe.blockData(data_d, blocker)
+
+# ## Clustering
+
+# Find the threshold that will maximize a weighted average of our precision and recall. 
+# When we set the recall weight to 2, we are saying we care twice as much
+# about recall as we do precision.
+#
+# If we had more data, we would not pass in all the blocked data into
+# this function but a representative sample.
+
+threshold = deduper.goodThreshold(blocked_data, recall_weight=2)
+
+# `duplicateClusters` will return sets of record IDs that dedupe
+# believes are all referring to the same entity.
+
+print 'clustering...'
+clustered_dupes = deduper.duplicateClusters(blocked_data, threshold)
+
+print '# duplicate sets', len(clustered_dupes)
+
+csvhelpers.writeResults(clustered_dupes, args.input_file)

@@ -13,5 +13,5 @@ pip install -r requirements.txt
 ## Usage
 
 ```console
-python dedupe-csv.py
+python dedupe-csv.py csv_example_messy_input.csv
 ```
