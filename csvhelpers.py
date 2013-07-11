@@ -41,6 +41,7 @@ def readData(filename):
 
     return data_d
 
+
 # ## Writing results
 def writeResults(clustered_dupes, input_file, output_file):
 

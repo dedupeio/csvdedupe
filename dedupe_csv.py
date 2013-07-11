@@ -32,7 +32,12 @@ def main(args):
 
   # import the specified CSV file
   print 'reading', args.input_file, '...'
-  data_d = csvhelpers.readData(args.input_file)
+
+  try:
+    data_d = csvhelpers.readData(args.input_file)
+  except IOError:
+    raise parser.error("Could not find" + args.input_file + '. Did you name it correctly?')
+
   print 'imported', len(data_d), 'rows'
 
   # Set up our data sample and fields to pass to dedupe
