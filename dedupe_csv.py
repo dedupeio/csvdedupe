@@ -45,7 +45,12 @@ def main(args):
   data_sample = dedupe.dataSample(data_d, args.sample_size)
 
   fields = {}
+
   for field in args.field_names.split(','):
+    
+    # sanity check for provided field names in CSV file
+    if not field in data_d[0]:
+      raise parser.error("Could not find field '" + field + "' in input_file")
     fields[field] = {'type': 'String'}
 
   print 'using fields:', fields
