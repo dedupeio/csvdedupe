@@ -16,8 +16,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--config_file', type=str,
                     help='Path to configuration file. Must provide either a config_file or input_file and filed_names.')
 
-parser.add_argument('--input_file', type=str, 
-                    help='CSV file to deduplicate')
+parser.add_argument('--input_files', type=str, 
+                    help='List of CSV files to deduplicate')
 parser.add_argument('--field_names', type=str,
                     help='List of column names for dedupe to pay attention to')
 parser.add_argument('--output_file', type=str,
@@ -34,7 +34,7 @@ parser.add_argument('--recall_weight', type=int, default=2,
 def main(args):
 
   # set defaults
-  INPUT_FILE = None
+  INPUT_FILES = None
   FIELD_NAMES = None
   OUTPUT_FILE = None
   SKIP_TRAINING = False
@@ -48,7 +48,7 @@ def main(args):
       with open(args.config_file, 'r') as f:
         config = json.load(f)
 
-      if config['input_file']: INPUT_FILE = config['input_file']
+      if config['input_files']: INPUT_FILES = config['input_files']
       if config['field_names']: FIELD_NAMES = config['field_names']
       if config['output_file']: OUTPUT_FILE = config['output_file']
       if config['skip_training']: SKIP_TRAINING = config['skip_training']
@@ -60,7 +60,7 @@ def main(args):
       raise parser.error("Could not find config file " + args.config_file + '. Did you name it correctly?')
 
   # override if provided from the command line
-  if args.input_file: INPUT_FILE = args.input_file
+  if args.input_files: INPUT_FILES = args.input_files
   if args.field_names: FIELD_NAMES = args.field_names
   if args.output_file: OUTPUT_FILE = args.output_file
   if args.skip_training: SKIP_TRAINING = args.skip_training
@@ -68,19 +68,22 @@ def main(args):
   if args.sample_size: SAMPLE_SIZE = args.sample_size
   if args.recall_weight: RECALL_WEIGHT = args.recall_weight
 
-  if not INPUT_FILE or not FIELD_NAMES:
+  if not INPUT_FILES or not FIELD_NAMES:
     raise parser.error("You must provide an input_file and filed_names. This can be done by specifying them in the config_file or passing them in as parameters.")
 
-  # import the specified CSV file
-  print 'reading', INPUT_FILE, '...'
+  data_d = {}
+  for input_file in INPUT_FILES:
 
-  try:
-    data_d = csvhelpers.readData(INPUT_FILE)
-  except IOError:
-    raise parser.error("Could not find the file " + INPUT_FILE + '. Did you name it correctly?')
+    # import the specified CSV file
+    print 'reading', input_file['file_name'], '...'
 
+    try:
+      data_d = csvhelpers.readData(input_file['file_name'])
+    except IOError:
+      raise parser.error("Could not find the file " + input_file['file_name'] + '. Did you name it correctly?')
+
+  print data_d[0]
   print 'imported', len(data_d), 'rows'
-
   fields = {}
 
   for field in FIELD_NAMES.split(','):
@@ -152,9 +155,9 @@ def main(args):
 
   # write out our results
   if OUTPUT_FILE == None:
-    OUTPUT_FILE = INPUT_FILE.replace('.','_cleaned.')
+    OUTPUT_FILE = INPUT_FILES[0]['file_name'].replace('.','_cleaned.')
 
-  csvhelpers.writeResults(clustered_dupes, INPUT_FILE, OUTPUT_FILE)
+  csvhelpers.writeResults(clustered_dupes, INPUT_FILES[0]['file_name'], OUTPUT_FILE)
 
 def launch_new_instance():
     args = parser.parse_args()

@@ -31,7 +31,12 @@ dedupe --config_file=config.json
 
 ```json
 {
-  "input_file": "examples/csv_example_messy_input.csv",
+  "input_files": [
+    {
+      "file_name": "examples/multi_file_part_1.csv",
+      "fields_names": "Site name,Address,Zip,Phone"
+    }
+  ],
   "field_names": "Site name,Address,Zip,Phone",
   "output_file": "examples/output.csv",
   "skip_training": false,
