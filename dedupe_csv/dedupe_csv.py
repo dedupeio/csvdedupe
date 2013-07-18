@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import json
 
 import csvhelpers
 import dedupe
@@ -44,16 +45,16 @@ def main(args):
   if args.config_file:
     #read from configuration file
     try:
-      exec("import " + args.config_file + " as config")
+      with open(args.config_file, 'r') as f:
+        config = json.load(f)
 
-      print config
-      if config.input_file: INPUT_FILE = config.input_file
-      if config.field_names: FIELD_NAMES = config.field_names
-      if config.output_file: OUTPUT_FILE = config.output_file
-      if config.skip_training: SKIP_TRAINING = config.skip_training
-      if config.training_file: TRAINING_FILE = config.training_file
-      if config.sample_size: SAMPLE_SIZE = config.sample_size
-      if config.recall_weight: RECALL_WEIGHT = config.recall_weight
+      if config['input_file']: INPUT_FILE = config['input_file']
+      if config['field_names']: FIELD_NAMES = config['field_names']
+      if config['output_file']: OUTPUT_FILE = config['output_file']
+      if config['skip_training']: SKIP_TRAINING = config['skip_training']
+      if config['training_file']: TRAINING_FILE = config['training_file']
+      if config['sample_size']: SAMPLE_SIZE = config['sample_size']
+      if config['recall_weight']: RECALL_WEIGHT = config['recall_weight']
 
     except IOError:
       raise parser.error("Could not find the file " + args.config_file + '. Did you name it correctly?')

@@ -13,3 +13,4 @@ logfile
 *.json
 *.db
 .DS_Store
+*.egg-info

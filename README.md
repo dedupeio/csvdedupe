@@ -16,7 +16,7 @@ python setup.py install
 ## Usage
 
 ```console
-./dedupe_csv.py --input_file=[your csv file] --field_names=[fields for dedupe to look at]
+./dedupe_csv.py --input_file=your_file.csv --field_names="Field1,Field2,Field3"
 ```
 
 ### arguments:
