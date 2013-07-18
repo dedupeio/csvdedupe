@@ -12,5 +12,6 @@ python:
 install:
   - pip install --use-mirrors -r requirements.txt 
   - pip install --use-mirrors -r requirements-test.txt
+  - python setup.py install
 # command to run tests, e.g. python setup.py test
 script: nosetests
