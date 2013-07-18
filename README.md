@@ -42,10 +42,17 @@ dedupe --config_file=config.json
 ```
 
 ### Arguments:
-  * `--config_file` Path to configuration file. Must provide either a config_file or input_file and filed_names.
+
+#### Required
+
+Either
+  * `--config_file` Path to configuration file.
+
+Or
   * `--input_file`            CSV file to deduplicate
   * `--field_names`           List of column names for dedupe to pay attention to
-  * `-h`, `--help`            show this help message and exit
+
+#### Optional
   * `--output_file OUTPUT_FILE`
                         CSV file to store deduplication results (default:
                         None)
@@ -60,3 +67,4 @@ dedupe --config_file=config.json
   * `--recall_weight RECALL_WEIGHT`
                         Threshold that will maximize a weighted average of our
                         precision and recall (default: 2)
+  * `-h`, `--help`            show help message and exit
