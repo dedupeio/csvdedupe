@@ -57,7 +57,7 @@ def main(args):
       if config['recall_weight']: RECALL_WEIGHT = config['recall_weight']
 
     except IOError:
-      raise parser.error("Could not find the file " + args.config_file + '. Did you name it correctly?')
+      raise parser.error("Could not find config file " + args.config_file + '. Did you name it correctly?')
 
   # override if provided from the command line
   if args.input_file: INPUT_FILE = args.input_file
