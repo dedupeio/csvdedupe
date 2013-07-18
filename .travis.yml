@@ -4,11 +4,13 @@ branches:
 
 language: python
 notifications:
-  email: false
+  email: 
+      on_failure : change
 python:
   - "2.7"
   - "2.6"
 install:
   - pip install --use-mirrors -r requirements.txt 
+  - pip install --use-mirrors -r requirements-test.txt
 # command to run tests, e.g. python setup.py test
 script: nosetests
