@@ -16,10 +16,30 @@ python setup.py install
 ## Usage
 
 ```console
-./dedupe_csv.py --input_file=your_file.csv --field_names="Field1,Field2,Field3"
+dedupe --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone" --training_file my_training.json --skip_training
 ```
 
-### arguments:
+or
+
+```console
+dedupe --config_file=config.json
+```
+
+### Example config file
+
+```json
+{
+  "input_file": "examples/csv_example_messy_input.csv",
+  "field_names": "Site name,Address,Zip,Phone",
+  "output_file": "examples/output.csv",
+  "skip_training": false,
+  "training_file": "training.json",
+  "sample_size": 150000,
+  "recall_weight": 2
+}
+```
+
+### Arguments:
   * `--config_file` Path to configuration file. Must provide either a config_file or input_file and filed_names.
   * `--input_file`            CSV file to deduplicate
   * `--field_names`           List of column names for dedupe to pay attention to
@@ -38,9 +58,3 @@ python setup.py install
   * `--recall_weight RECALL_WEIGHT`
                         Threshold that will maximize a weighted average of our
                         precision and recall (default: 2)
-
-### Example
-
-```console
-./dedupe_csv.py --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone" --training_file my_training.json --skip_training
-```
