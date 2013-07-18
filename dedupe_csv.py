@@ -117,6 +117,9 @@ def main(args):
 
   csvhelpers.writeResults(clustered_dupes, args.input_file, output_file)
 
-if __name__ == '__main__':
-  args = parser.parse_args()
-  main(args)
+def launch_new_instance():
+    args = parser.parse_args()
+    main(args)
+    
+if __name__ == "__main__":
+    launch_new_instance()
