@@ -4,7 +4,8 @@ branches:
 
 language: python
 notifications:
-  email: false
+  email: 
+      on_failure : change
 python:
   - "2.7"
   - "2.6"
