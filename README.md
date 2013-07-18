@@ -16,14 +16,13 @@ python setup.py install
 ## Usage
 
 ```console
-dedupe input_file field_names
+./dedupe_csv.py --input_file=[your csv file] --field_names=[fields for dedupe to look at]
 ```
 
-### positional arguments:
-  * `input_file`            CSV file to deduplicate
-  * `field_names`           List of column names for dedupe to pay attention to
-
-### optional arguments:
+### arguments:
+  * `--config_file` Path to configuration file. Must provide either a config_file or input_file and filed_names.
+  * `--input_file`            CSV file to deduplicate
+  * `--field_names`           List of column names for dedupe to pay attention to
   * `-h`, `--help`            show this help message and exit
   * `--output_file OUTPUT_FILE`
                         CSV file to store deduplication results (default:
@@ -43,5 +42,5 @@ dedupe input_file field_names
 ### Example
 
 ```console
-python dedupe_csv.py csv_example_messy_input.csv "Site name,Address,Zip,Phone" --training_file my_training.json --skip_training
+./dedupe_csv.py --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone" --training_file my_training.json --skip_training
 ```

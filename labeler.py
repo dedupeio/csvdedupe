@@ -1,0 +1,1 @@
+from dedupe.training import consoleLabel
