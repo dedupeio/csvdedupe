@@ -15,14 +15,14 @@ python setup.py install
 
 ## Usage
 
-Passing in command line parameters
+Provide an input file and field names
 ```console
-dedupe --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone" --training_file my_training.json --skip_training
+dedupe --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone"
 ```
 
 __or__
 
-Passing in a config file
+Define everything in a config file
 ```console
 dedupe --config_file=config.json
 ```
