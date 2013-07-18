@@ -10,12 +10,13 @@ Command line tool for deduplicating CSV files.
 git clone git@github.com:datamade/dedupe-csv.git
 cd dedupe-csv
 pip install -r requirements.txt
+python setup.py install
 ```
 
 ## Usage
 
 ```console
-python dedupe_csv.py input_file field_names
+dedupe input_file field_names
 ```
 
 ### positional arguments:
