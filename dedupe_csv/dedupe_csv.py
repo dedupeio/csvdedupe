@@ -112,7 +112,7 @@ def main(args):
 
   if not SKIP_TRAINING:
     print 'starting active labeling...'
-    deduper.train(data_sample, labeler.consoleLabel)
+    deduper.train(data_sample, labeler.label)
 
     # When finished, save our training away to disk
     print 'saving training data to', TRAINING_FILE
