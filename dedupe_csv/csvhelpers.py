@@ -19,7 +19,7 @@ def preProcess(column):
     return column
 
 
-def readData(filename):
+def readData(input_file, field_names):
     """
     Read in our data from a CSV file and create a dictionary of records, 
     where the key is a unique record ID and each value is a 
@@ -31,15 +31,18 @@ def readData(filename):
     1. Expect this requirement will likely be relaxed in the future.**
     """
 
-    data_d = {}
-    with open(filename) as f:
+    data = []
+    with open(input_file["file_name"]) as f:
         reader = csv.DictReader(f)
         for row in reader:
-            clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-            row_id = int(row['Id'])
-            data_d[row_id] = dedupe.core.frozendict(clean_row)
+            clean_row = dict((k, preProcess(v)) for (k, v) in row.items())
+            for source, target in zip(input_file["fields_names"], field_names) :
+                if source != target :
+                    clean_row[target] = clean_row[source]
+                    del clean_row[source]
+            data.append(dedupe.core.frozendict(clean_row))
 
-    return data_d
+    return data
 
 
 # ## Writing results
@@ -48,7 +51,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     # Write our original data back out to a CSV with a new column called 
     # 'Cluster ID' which indicates which records refer to each other.
 
-    print 'saving results to:', output_file
+    logging.info('saving results to:', output_file)
 
     cluster_membership = collections.defaultdict(lambda : 'x')
     for (cluster_id, cluster) in enumerate(clustered_dupes):
