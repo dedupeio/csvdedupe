@@ -1,19 +1,23 @@
 import curses
 
-def printFields(win1, win2 ,value1, value2, y):
+y = 2 # global variable to keep track of printed lines
+
+def printFields(win1, win2 ,value1, value2):
+    global y
     win1.addstr(y, 2, value1)
     win1.refresh()
 
     win2.addstr(y, 2, value2)
     win2.refresh()
 
-    return y + 1
+    y = y + 1
 
-def printStatement(win, value, y):
+def printStatement(win, value):
+    global y
     win.addstr(y, 2, value)
     win.refresh()
 
-    return y + 1
+    y = y + 1
 
 def main(screen) :
     height, width = screen.getmaxyx()
@@ -27,16 +31,32 @@ def main(screen) :
     win1 = curses.newwin(height, width/2, 0, 0)
     win2 = curses.newwin(height, (width/2 + 1), 0, (width/2-1))
 
-    line_number = 2
-    line_number = printFields(win1, win2, 'Record 1', 'Record 2', line_number)
-    line_number = printFields(win1, win2, '----------------', '---------------', line_number)
+    printFields(win1, win2, 'Record 1', 'Record 2')
+    printFields(win1, win2, '----------------', '---------------')
 
     for field in fields:
-        line_number = printFields(win1, win2, (field + ': ' + uncertain_pairs[0][0][field]), (field + ': ' + uncertain_pairs[0][1][field]), line_number)
+        line_number = printFields(win1, win2, (field + ': ' + uncertain_pairs[0][0][field]), (field + ': ' + uncertain_pairs[0][1][field]))
 
-    line_number = printStatement(win1, '', line_number)
-    line_number = printStatement(win1, 'Do these records refer to the same thing?', line_number)
-    line_number = printStatement(win1, '(y)es / (n)o / (u)nsure / (f)inished', line_number)
+    printStatement(win1, '')
+    printStatement(win1, 'Do these records refer to the same thing?')
+    printStatement(win1, '(y)es / (n)o / (u)nsure / (f)inished')
+
+    finished = False
+    while finished == False:
+        label = screen.getch()
+        if label == ord('y'):
+            # duplicates.append(record_pair)
+            printStatement(win1, 'yup!')
+        elif label == ord('n'):
+            # nonduplicates.append(record_pair)
+            printStatement(win1, 'nope!')
+        elif label == ord('f'):
+            printStatement(win1, 'Finished labeling')
+            finished = True
+            break
+        elif label != ord('u'):
+            printStatement(win1, 'Nonvalid response')
+            # raise
     
 if __name__ == '__main__' :
    curses.wrapper(main)	      		 	      
