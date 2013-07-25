@@ -59,8 +59,6 @@ class DedupeCSV :
 
     configuration.update(args_d)
 
-    print configuration
-
     if ('arg_input_files' in configuration 
         and 'input_files' in configuration) :
       raise parser.error("input_files cannot be set in both the config file and the command line")
@@ -76,7 +74,6 @@ class DedupeCSV :
     # set defaults
     try :
       self.input_files = configuration['input_files']
-      print configuration['input_files']
     except KeyError :
       raise parser.error("You must provide an input_file")
 
@@ -138,9 +135,9 @@ class DedupeCSV :
     elif self.skip_training:
       raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
-  if not SKIP_TRAINING:
-    print 'starting active labeling...'
-    deduper.train(data_sample, labeler.label)
+    if not self.skip_training:
+      logging.info('starting active labeling...')
+      deduper.train(data_sample, labeler.label)
 
       # When finished, save our training away to disk
       logging.info('saving training data to', self.training_file)

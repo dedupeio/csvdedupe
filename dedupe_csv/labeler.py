@@ -43,7 +43,7 @@ def _cursesLabel(screen, (uncertain_pairs, fields)):
         win1 = curses.newwin(height-3, width/2, 4, 0)
         win2 = curses.newwin(height-3, (width/2 + 1), 4, (width/2-1))
 
-        _printStatement(win0, 'Labeling possible record matches. The more you label, the more accurate dedupe will be.')
+        #_printStatement(win0, 'Labeling possible record matches. The more you label, the more accurate dedupe will be.')
         # _printStatement(win0, ("Status: %s positive, %s negative" % (len(duplicates), len(nonduplicates))))
 
         _printFields(win1, win2, 'Record A', 'Record B')

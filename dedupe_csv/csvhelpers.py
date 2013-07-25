@@ -2,6 +2,7 @@ import os
 import csv
 import re
 import collections
+import logging
 
 import AsciiDammit
 import dedupe
