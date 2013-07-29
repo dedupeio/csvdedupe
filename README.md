@@ -21,6 +21,7 @@ Provide an input file and field names
 dedupe --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone"
 ```
 
+
 __or__
 
 Define everything in a config file
