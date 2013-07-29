@@ -9,6 +9,7 @@ Command line tool for deduplicating CSV files.
 ```console
 git clone git@github.com:datamade/dedupe-csv.git
 cd dedupe-csv
+pip install "numpy>=1.6"
 pip install -r requirements.txt
 python setup.py install
 ```
