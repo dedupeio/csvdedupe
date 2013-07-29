@@ -52,7 +52,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     # Write our original data back out to a CSV with a new column called 
     # 'Cluster ID' which indicates which records refer to each other.
 
-    logging.info('saving results to:', output_file)
+    logging.info('saving results to: %s' % output_file)
 
     cluster_membership = collections.defaultdict(lambda : 'x')
     for (cluster_id, cluster) in enumerate(clustered_dupes):
