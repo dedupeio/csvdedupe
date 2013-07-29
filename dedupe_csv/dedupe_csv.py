@@ -5,7 +5,8 @@ import os
 import sys
 import json
 import logging
-from StringIO import StringIO
+from cStringIO import StringIO
+import shutil
 
 import csvhelpers
 import dedupe
@@ -18,7 +19,7 @@ parser = argparse.ArgumentParser(
 )
 
 # positional arguments
-parser.add_argument('input', nargs='?', default=sys.stdin, type=argparse.FileType('r'),
+parser.add_argument('input', nargs='?', default=sys.stdin,
                     help='The CSV file to operate on. If omitted, will accept input on STDIN.')
 
 # optional arguments
@@ -61,9 +62,9 @@ class DedupeCSV :
     try :
       # take in STDIN input or open the file
       if isinstance(configuration['input'], file):
-        self.input = configuration['input']
+        self.input = configuration['input'].read()
       else:
-        self.input = open(configuration['input'], 'rU')
+        self.input = open(configuration['input'], 'rU').read()
     except KeyError :
       raise parser.error("You must provide an input_file")
 

@@ -3,6 +3,7 @@ import csv
 import re
 import collections
 import logging
+from cStringIO import StringIO
 
 import AsciiDammit
 import dedupe
@@ -33,12 +34,11 @@ def readData(input_file, field_names):
     """
 
     data = {}
-    with input_file as f:
-        reader = csv.DictReader(input_file)
-        for row in reader:
-            clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-            row_id = int(row['Id'])
-            data[row_id] = dedupe.core.frozendict(clean_row)
+    reader = csv.DictReader(StringIO(input_file))
+    for row in reader:
+        clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
+        row_id = int(row['Id'])
+        data[row_id] = dedupe.core.frozendict(clean_row)
 
     return data
 
@@ -59,18 +59,17 @@ def writeResults(clustered_dupes, input_file, output_file):
     with open(output_file, 'w') as f:
         writer = csv.writer(f)
 
-        with input_file as f_input :
-            reader = csv.reader(f_input)
+        reader = csv.reader(StringIO(input_file))
 
-            heading_row = reader.next()
-            heading_row.insert(0, 'Cluster ID')
-            writer.writerow(heading_row)
+        heading_row = reader.next()
+        heading_row.insert(0, 'Cluster ID')
+        writer.writerow(heading_row)
 
-            for row in reader:
-                row_id = int(row[0])
-                cluster_id = cluster_membership[row_id]
-                row.insert(0, cluster_id)
-                writer.writerow(row)
+        for row in reader:
+            row_id = int(row[0])
+            cluster_id = cluster_membership[row_id]
+            row.insert(0, cluster_id)
+            writer.writerow(row)
 
 # ## Printing results to stdout
 def printResults(clustered_dupes, input_file):
