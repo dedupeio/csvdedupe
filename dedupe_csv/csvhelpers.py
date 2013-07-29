@@ -44,6 +44,19 @@ class UnicodeCSVReader(object):
     def line_num(self):
         return self.reader.line_num
 
+class UnicodeCSVDictReader(csv.DictReader):
+    """
+    A CSV DictReader which works the same as default csv.DictReader except
+    it wraps the UnicodeCSVReader instead of the built in one.
+    Also stolen, with love, from csvkit: https://github.com/onyxfish/csvkit
+    """
+    def __init__(self, f):
+        reader = UnicodeCSVReader(f)
+
+        csv.DictReader.__init__(self, f)
+
+        self.reader = reader 
+
 def preProcess(column):
     """
     Do a little bit of data cleaning with the help of [AsciiDammit](https://github.com/tnajdek/ASCII--Dammit) 
@@ -71,7 +84,7 @@ def readData(input_file, field_names):
 
     data = []
     with open(input_file["file_name"]) as f:
-        reader = UnicodeCSVReader(f)
+        reader = UnicodeCSVDictReader(f)
         for row in reader:
             clean_row = dict((k, preProcess(v)) for (k, v) in row.items())
             for source, target in zip(input_file["fields_names"], field_names) :
