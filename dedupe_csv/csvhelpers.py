@@ -1,11 +1,48 @@
 import os
 import csv
 import re
+import codecs
 import collections
 import logging
 
 import AsciiDammit
 import dedupe
+
+class UTF8Recoder(object):
+    """
+    Iterator that reads an encoded stream and reencodes the input to UTF-8.
+    Stolen, with love, from csvkit: https://github.com/onyxfish/csvkit
+    """
+    def __init__(self, f, encoding):
+        self.reader = codecs.getreader(encoding)(f)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        return self.reader.next().encode('utf-8')
+
+class UnicodeCSVReader(object):
+    """
+    A CSV reader which will read rows from a file in a given encoding.
+    Also stolen, with love, from csvkit: https://github.com/onyxfish/csvkit
+    """
+    def __init__(self, f, encoding='utf-8', **kwargs):
+        f = UTF8Recoder(f, encoding)
+        
+        self.reader = csv.reader(f, **kwargs)
+
+    def next(self):
+        row = self.reader.next()
+
+        return [unicode(s, 'utf-8') for s in row]
+
+    def __iter__(self):
+        return self
+
+    @property
+    def line_num(self):
+        return self.reader.line_num
 
 def preProcess(column):
     """
@@ -13,7 +50,7 @@ def preProcess(column):
     and Regex. Things like casing, extra spaces, quotes and new lines can be ignored.
     """
 
-    column = AsciiDammit.asciiDammit(column)
+    # column = AsciiDammit.asciiDammit(column)
     column = re.sub('  +', ' ', column)
     column = re.sub('\n', ' ', column)
     column = column.strip().strip('"').strip("'").lower().strip()
@@ -34,7 +71,7 @@ def readData(input_file, field_names):
 
     data = []
     with open(input_file["file_name"]) as f:
-        reader = csv.DictReader(f)
+        reader = UnicodeCSVReader(f)
         for row in reader:
             clean_row = dict((k, preProcess(v)) for (k, v) in row.items())
             for source, target in zip(input_file["fields_names"], field_names) :
