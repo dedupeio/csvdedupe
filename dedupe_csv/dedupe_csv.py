@@ -121,7 +121,7 @@ class DedupeCSV :
     logging.info('taking a sample of %d possible pairs', self.sample_size)
     data_sample = dedupe.dataSample(data_d, self.sample_size)
 
-    logging.info('using fields:', self.field_definition.keys())
+    logging.info('using fields: %s' % self.field_definition.keys())
     # # Create a new deduper object and pass our data model to it.
     deduper = dedupe.Dedupe(self.field_definition)
 
@@ -130,17 +130,17 @@ class DedupeCSV :
     # __Note:__ if you want to train from scratch, delete the training_file
 
     if os.path.exists(self.training_file):
-      logging.info('reading labeled examples from ', self.training_file)
+      logging.info('reading labeled examples from %s' % self.training_file)
       deduper.train(data_sample, self.training_file)
     elif self.skip_training:
       raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
     if not self.skip_training:
       logging.info('starting active labeling...')
-      deduper.train(data_sample, labeler.label)
+      deduper.train(data_sample, labeler.consoleLabel)
 
       # When finished, save our training away to disk
-      logging.info('saving training data to', self.training_file)
+      logging.info('saving training data to %s' % self.training_file)
       deduper.writeTraining(self.training_file)
     else:
       logging.info('skipping the training step')
@@ -167,7 +167,7 @@ class DedupeCSV :
     # If we had more data, we would not pass in all the blocked data into
     # this function but a representative sample.
 
-    logging.info('finding a good threshold with a recall_weight of', 
+    logging.info('finding a good threshold with a recall_weight of %s' % 
                  self.recall_weight)
     threshold = deduper.goodThreshold(blocked_data, recall_weight=self.recall_weight)
 
@@ -177,7 +177,7 @@ class DedupeCSV :
     logging.info('clustering...')
     clustered_dupes = deduper.duplicateClusters(blocked_data, threshold)
 
-    logging.info('# duplicate sets', len(clustered_dupes))
+    logging.info('# duplicate sets %s' % len(clustered_dupes))
 
     # write out our results
     if self.output_file == None:
