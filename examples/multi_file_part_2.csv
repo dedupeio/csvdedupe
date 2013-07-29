@@ -1,4 +1,4 @@
-Id,Source,Site name,Address,Zip,Phone,Fax,Program Name,Length of Day,IDHS Provider ID,Agency,Neighborhood,Funded Enrollment,Program Option,Number per Site EHS,Number per Site HS,Director,Head Start Fund,Eearly Head Start Fund,CC fund,Progmod,Website,Executive Director,Center Director,ECE Available Programs,NAEYC Valid Until,NAEYC Program Id,Email Address,Ounce of Prevention Description,Purple binder service type,Column,Column2
+Id,Source,Site name,Address,Zip Code,Phone,Fax,Program Name,Length of Day,IDHS Provider ID,Agency,Neighborhood,Funded Enrollment,Program Option,Number per Site EHS,Number per Site HS,Director,Head Start Fund,Eearly Head Start Fund,CC fund,Progmod,Website,Executive Director,Center Director,ECE Available Programs,NAEYC Valid Until,NAEYC Program Id,Email Address,Ounce of Prevention Description,Purple binder service type,Column,Column2
 1328,IDHS_child_care_provider_list.csv," Bloomington Day Care Center, Inc.","2708 East Lincoln Street, Bloomington",61704,6615600,"(309)
 662-4202",,,8307-7891-7433-008,,,,,,,,,,,,,,,,,,,,,,
 1329,IDHS_child_care_provider_list.csv," Carole Robertson Center
