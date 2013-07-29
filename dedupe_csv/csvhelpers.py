@@ -32,13 +32,16 @@ def readData(input_file, field_names):
     1. Expect this requirement will likely be relaxed in the future.**
     """
 
-    data = {}
-    with input_file as f:
-        reader = csv.DictReader(input_file)
+    data = []
+    with open(input_file["file_name"]) as f:
+        reader = csv.DictReader(f)
         for row in reader:
-            clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-            row_id = int(row['Id'])
-            data[row_id] = dedupe.core.frozendict(clean_row)
+            clean_row = dict((k, preProcess(v)) for (k, v) in row.items())
+            for source, target in zip(input_file["fields_names"], field_names) :
+                if source != target :
+                    clean_row[target] = clean_row[source]
+                    del clean_row[source]
+            data.append(dedupe.core.frozendict(clean_row))
 
     return data
 
@@ -59,7 +62,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     with open(output_file, 'w') as f:
         writer = csv.writer(f)
 
-        with input_file as f_input :
+        with open(input_file) as f_input :
             reader = csv.reader(f_input)
 
             heading_row = reader.next()
