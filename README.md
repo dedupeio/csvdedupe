@@ -46,7 +46,6 @@ csvdedupe examples/multi_file_part_1.csv --config_file=config.json
                                        "Has Missing" : true},
                         "Phone"     : {"type" : "String",
                                        "Has Missing" : true}},
-
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
