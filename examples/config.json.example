@@ -1,18 +1,4 @@
 {
-  "input_files": [
-    {
-      "file_name": "multi_file_part_1.csv",
-      "fields_names": ["Facility","Address","Zip","Phone Number"]
-    },
-    {
-      "file_name": "multi_file_part_2.csv",
-      "fields_names": ["Site name","Address","Zip Code","Phone"]
-    },
-    {
-      "file_name": "multi_file_part_3.csv",
-      "fields_names": ["Site name","Address","Zip","Phone"]
-    }
-  ],
   "field_names": ["Site name","Address","Zip","Phone"],
   "field_definition" : {"Site name" : {"type" : "String"},
                         "Address"   : {"type" : "String"},
