@@ -62,17 +62,23 @@ class DedupeCSV :
     try :
       # take in STDIN input or open the file
       if isinstance(configuration['input'], file):
-        self.input = configuration['input'].read()
-        # We need to get control of STDIN again.
-        # This is a UNIX/Mac OSX solution only
-        # http://stackoverflow.com/questions/7141331/pipe-input-to-python-program-and-later-get-input-from-user
-        # 
-        # Same question has a Windows solution
-        sys.stdin = open('/dev/tty') # Unix only solution, 
+        if not sys.stdin.isatty() :
+          self.input = configuration['input'].read()
+          # We need to get control of STDIN again.
+          # This is a UNIX/Mac OSX solution only
+          # http://stackoverflow.com/questions/7141331/pipe-input-to-python-program-and-later-get-input-from-user
+          # 
+          # Same question has a Windows solution
+          sys.stdin = open('/dev/tty') # Unix only solution, 
+        else :
+          raise parser.error("No input file or STDIN specified.")
       else:
-        self.input = open(configuration['input'], 'rU').read()
+        try :
+          self.input = open(configuration['input'], 'rU').read()
+        except IOError :
+          raise parser.error("Could not find the file %s" % (configuration['input'],))
     except KeyError :
-      raise parser.error("You must provide an input_file")
+          raise parser.error("No input file or STDIN specified.")
 
     try : 
       self.field_names = configuration['field_names']
@@ -97,10 +103,7 @@ class DedupeCSV :
     data_d = {}
     # import the specified CSV file
 
-    try:
-      data_d = csvhelpers.readData(self.input, self.field_names)
-    except IOError:
-      raise parser.error("No input file or STDIN specified.")
+    data_d = csvhelpers.readData(self.input, self.field_names)
 
     logging.info('imported %d rows', len(data_d))
 
