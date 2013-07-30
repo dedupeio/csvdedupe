@@ -39,7 +39,7 @@ parser.add_argument('--recall_weight', type=int, default=2,
                     help='Threshold that will maximize a weighted average of our precision and recall')
 parser.add_argument('-v', '--verbose', action='count', default=0)
 
-class DedupeCSV :
+class CSVDedupe :
 
   def __init__(self, args) :
     configuration = {}
@@ -192,7 +192,7 @@ def launch_new_instance():
       log_level = logging.DEBUG
     logging.basicConfig(level=log_level)
 
-    d = DedupeCSV(args)
+    d = CSVDedupe(args)
     d.main()
     
 if __name__ == "__main__":

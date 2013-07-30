@@ -18,21 +18,21 @@ python setup.py install
 
 Provide an input file and field names
 ```console
-csvdedupe examples/multi_file_part_1.csv --field_names "Site name" Address Zip Phone --output_file output.txt
+csvdedupe examples/csv_example_messy_input.csv --field_names "Site name" Address Zip Phone --output_file output.txt
 ```
 
 __or__
 
 Pipe it, UNIX style
 ```console
-cat examples/multi_file_part_1.csv | csvdedupe --field_names "Site name" Address Zip Phone > output.txt
+cat examples/csv_example_messy_input.csv | csvdedupe --skip_training --field_names "Site name" Address Zip Phone > output.txt
 ```
 
 __or__
 
 Define everything in a config file
 ```console
-csvdedupe examples/multi_file_part_1.csv --config_file=config.json
+csvdedupe examples/csv_example_messy_input.csv --config_file=config.json
 ```
 
 ### Example config file
@@ -58,10 +58,12 @@ csvdedupe examples/multi_file_part_1.csv --config_file=config.json
 
 #### Required
 
-  * `input files`  CSV file to deduplicate or a CSV file piped into dedupe 
+  * `input` a CSV file name or piped CSV file to deduplicate
 
 Either
   * `--config_file` Path to configuration file.
+
+Or
   * `--field_names` List of column names for dedupe to pay attention to
 
 #### Optional
