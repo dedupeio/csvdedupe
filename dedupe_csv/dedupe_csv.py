@@ -63,6 +63,12 @@ class DedupeCSV :
       # take in STDIN input or open the file
       if isinstance(configuration['input'], file):
         self.input = configuration['input'].read()
+        # We need to get control of STDIN again.
+        # This is a UNIX/Mac OSX solution only
+        # http://stackoverflow.com/questions/7141331/pipe-input-to-python-program-and-later-get-input-from-user
+        # 
+        # Same question has a Windows solution
+        sys.stdin = open('/dev/tty') # Unix only solution, 
       else:
         self.input = open(configuration['input'], 'rU').read()
     except KeyError :
@@ -123,7 +129,8 @@ class DedupeCSV :
 
     if not self.skip_training:
       logging.info('starting active labeling...')
-      deduper.train(data_sample, labeler.consoleLabel)
+
+      deduper.train(data_sample, labeler.label)
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
@@ -169,7 +176,8 @@ class DedupeCSV :
     if self.output_file == None:
       self.output_file = "output.csv"
 
-    csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
+    #csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
+    csvhelpers.printResults(clustered_dupes, self.input)
 
 def launch_new_instance():
     args = parser.parse_args()

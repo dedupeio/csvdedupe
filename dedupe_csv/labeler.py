@@ -1,12 +1,12 @@
-import dedupe
-from dedupe.training import consoleLabel
+import dedupe 
+from dedupe.training import consoleLabel as label
 
 import curses
 
 y = 2 # global variable to keep track of printed lines
 
-def label(uncertain_pairs, fields):
-  return curses.wrapper(_cursesLabel, (uncertain_pairs, fields))
+#def label(uncertain_pairs, fields):
+#  return curses.wrapper(_cursesLabel, (uncertain_pairs, fields))
 
 def _printFields(win1, win2 ,value1, value2):
     global y
@@ -66,7 +66,7 @@ def _cursesLabel(screen, (uncertain_pairs, fields)):
             finished = True
             break
         elif label != ord('u'):
-            _printStatement(win1, 'Nonvalid response')
+            printStatement(win1, 'Nonvalid response')
             raise
 
     return ({0: nonduplicates, 1: duplicates}, finished)
