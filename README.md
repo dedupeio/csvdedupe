@@ -18,27 +18,35 @@ python setup.py install
 
 Provide an input file and field names
 ```console
-dedupe --input_file=csv_example_messy_input.csv --field_names="Site name,Address,Zip,Phone"
+dedupe examples/multi_file_part_1.csv --field_names "Site name" Address Zip Phone --output_file output.txt
+```
+
+__or__
+
+Pipe it, UNIX style
+```console
+cat examples/multi_file_part_1.csv | dedupe --field_names "Site name" Address Zip Phone > output.txt
 ```
 
 __or__
 
 Define everything in a config file
 ```console
-dedupe --config_file=config.json
+dedupe examples/multi_file_part_1.csv --config_file=config.json
 ```
 
 ### Example config file
 
 ```json
 {
-  "input_files": [
-    {
-      "file_name": "examples/multi_file_part_1.csv",
-      "fields_names": "Site name,Address,Zip,Phone"
-    }
-  ],
-  "field_names": "Site name,Address,Zip,Phone",
+  "field_names": ["Site name", "Address", "Zip", "Phone"],
+  "field_definition" : {"Site name" : {"type" : "String"},
+                        "Address"   : {"type" : "String"},
+                        "Zip"       : {"type" : "String",
+                                       "Has Missing" : true},
+                        "Phone"     : {"type" : "String",
+                                       "Has Missing" : true}},
+
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
@@ -51,12 +59,11 @@ dedupe --config_file=config.json
 
 #### Required
 
+  * `input files`  CSV file to deduplicate or a CSV file piped into dedupe 
+
 Either
   * `--config_file` Path to configuration file.
-
-Or
-  * `--input_file`            CSV file to deduplicate
-  * `--field_names`           List of column names for dedupe to pay attention to
+  * `--field_names` List of column names for dedupe to pay attention to
 
 #### Optional
   * `--output_file OUTPUT_FILE`

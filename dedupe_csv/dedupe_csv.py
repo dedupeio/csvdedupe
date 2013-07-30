@@ -2,8 +2,11 @@
 
 import argparse
 import os
+import sys
 import json
 import logging
+from cStringIO import StringIO
+import shutil
 
 import csvhelpers
 import dedupe
@@ -15,12 +18,13 @@ parser = argparse.ArgumentParser(
   formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 
+# positional arguments
+parser.add_argument('input', nargs='?', default=sys.stdin,
+                    help='The CSV file to operate on. If omitted, will accept input on STDIN.')
+
 # optional arguments
 parser.add_argument('--config_file', type=str,
-                    help='Path to configuration file. Must provide either a config_file or input_file and filed_names.')
-
-parser.add_argument('--input_files', type=str, nargs="+",
-                    help='List of CSV files to deduplicate')
+                    help='Path to configuration file. Must provide either a config_file or input and filed_names.')
 parser.add_argument('--field_names', type=str, nargs="+",
                     help='List of column names for dedupe to pay attention to')
 parser.add_argument('--output_file', type=str,
@@ -52,30 +56,29 @@ class DedupeCSV :
     # override if provided from the command line
     args_d = vars(args)
     args_d = dict((k,v) for (k,v) in args_d.items() if v is not None)
-    if 'input_files' in args_d :
-      args_d['arg_input_files'] = args_d['input_files']
-      del args_d['input_files']
-      
-
     configuration.update(args_d)
-
-    if ('arg_input_files' in configuration 
-        and 'input_files' in configuration) :
-      raise parser.error("input_files cannot be set in both the config file and the command line")
-
-    if ('arg_input_files' in configuration
-        and 'field_names' in configuration) :
-
-      configuration['input_files'] = [{"file_name" : input_file, 
-                                       "fields_names" : configuration["field_names"]}
-                                      for input_file
-                                      in configuration['arg_input_files']]
 
     # set defaults
     try :
-      self.input_files = configuration['input_files']
+      # take in STDIN input or open the file
+      if isinstance(configuration['input'], file):
+        if not sys.stdin.isatty() :
+          self.input = configuration['input'].read()
+          # We need to get control of STDIN again.
+          # This is a UNIX/Mac OSX solution only
+          # http://stackoverflow.com/questions/7141331/pipe-input-to-python-program-and-later-get-input-from-user
+          # 
+          # Same question has a Windows solution
+          sys.stdin = open('/dev/tty') # Unix only solution, 
+        else :
+          raise parser.error("No input file or STDIN specified.")
+      else:
+        try :
+          self.input = open(configuration['input'], 'rU').read()
+        except IOError :
+          raise parser.error("Could not find the file %s" % (configuration['input'],))
     except KeyError :
-      raise parser.error("You must provide an input_file")
+          raise parser.error("No input file or STDIN specified.")
 
     try : 
       self.field_names = configuration['field_names']
@@ -97,25 +100,17 @@ class DedupeCSV :
 
   def main(self) :
 
-    data = []
-    for input_file in self.input_files:
+    data_d = {}
+    # import the specified CSV file
 
-      # import the specified CSV file
-      logging.info('reading  %s ...', input_file['file_name'])
+    data_d = csvhelpers.readData(self.input, self.field_names)
 
-      try:
-        data.extend(csvhelpers.readData(input_file, self.field_names))
-      except IOError:
-        raise parser.error("Could not find the file " + input_file['file_name'] + '. Did you name it correctly?')
-
-    data_d = dict(zip(itertools.count(), data))
-    logging.debug(data_d[0])
     logging.info('imported %d rows', len(data_d))
 
     # sanity check for provided field names in CSV file
     for field in self.field_definition :
       if not field in data_d[0]:
-        raise parser.error("Could not find field '" + field + "' in input_file")
+        raise parser.error("Could not find field '" + field + "' in input")
 
     # Set up our data sample
     logging.info('taking a sample of %d possible pairs', self.sample_size)
@@ -131,13 +126,14 @@ class DedupeCSV :
 
     if os.path.exists(self.training_file):
       logging.info('reading labeled examples from %s' % self.training_file)
-      deduper.train(data_sample, self.training_file)
+      deduper.train(data_sample, str(self.training_file))
     elif self.skip_training:
       raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
     if not self.skip_training:
       logging.info('starting active labeling...')
-      deduper.train(data_sample, labeler.consoleLabel)
+
+      deduper.train(data_sample, labeler.label)
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
@@ -180,10 +176,11 @@ class DedupeCSV :
     logging.info('# duplicate sets %s' % len(clustered_dupes))
 
     # write out our results
-    if self.output_file == None:
-      self.output_file = self.input_files[0]['file_name'].replace('.','_cleaned.')
+    if self.output_file is None:
+      csvhelpers.printResults(clustered_dupes, self.input)
+    else :
+      csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
 
-    csvhelpers.writeResults(clustered_dupes, self.input_files[0]['file_name'], self.output_file)
 
 def launch_new_instance():
     args = parser.parse_args()
