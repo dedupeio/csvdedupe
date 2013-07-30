@@ -2,13 +2,13 @@
 
 Command line tool for deduplicating CSV files.
 
-[![Build Status](https://travis-ci.org/datamade/dedupe-csv.png?branch=master)](https://travis-ci.org/datamade/dedupe-csv)
+[![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
 
 ## Installation
 
 ```console
-git clone git@github.com:datamade/dedupe-csv.git
-cd dedupe-csv
+git clone git@github.com:datamade/csvdedupe.git
+cd csvdedupe
 pip install "numpy>=1.6"
 pip install -r requirements.txt
 python setup.py install
@@ -18,21 +18,21 @@ python setup.py install
 
 Provide an input file and field names
 ```console
-dedupe examples/multi_file_part_1.csv --field_names "Site name" Address Zip Phone --output_file output.txt
+csvdedupe examples/multi_file_part_1.csv --field_names "Site name" Address Zip Phone --output_file output.txt
 ```
 
 __or__
 
 Pipe it, UNIX style
 ```console
-cat examples/multi_file_part_1.csv | dedupe --field_names "Site name" Address Zip Phone > output.txt
+cat examples/multi_file_part_1.csv | csvdedupe --field_names "Site name" Address Zip Phone > output.txt
 ```
 
 __or__
 
 Define everything in a config file
 ```console
-dedupe examples/multi_file_part_1.csv --config_file=config.json
+csvdedupe examples/multi_file_part_1.csv --config_file=config.json
 ```
 
 ### Example config file
