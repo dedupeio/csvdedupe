@@ -173,11 +173,11 @@ class DedupeCSV :
     logging.info('# duplicate sets %s' % len(clustered_dupes))
 
     # write out our results
-    if self.output_file == None:
-      self.output_file = "output.csv"
+    if self.output_file is None:
+      csvhelpers.printResults(clustered_dupes, self.input)
+    else :
+      csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
 
-    #csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
-    csvhelpers.printResults(clustered_dupes, self.input)
 
 def launch_new_instance():
     args = parser.parse_args()
