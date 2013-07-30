@@ -39,7 +39,14 @@ dedupe examples/multi_file_part_1.csv --config_file=config.json
 
 ```json
 {
-  "field_names": "Site name,Address,Zip,Phone",
+  "field_names": ["Site name", "Address", "Zip", "Phone"],
+  "field_definition" : {"Site name" : {"type" : "String"},
+                        "Address"   : {"type" : "String"},
+                        "Zip"       : {"type" : "String",
+  			                               "Has Missing" : true},
+	                      "Phone"     : {"type" : "String", 
+				                               "Has Missing" : true}},
+
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
