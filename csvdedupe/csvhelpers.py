@@ -38,7 +38,6 @@ class UnicodeCSVReader(object):
 
     def next(self):
         row = self.reader.next()
-
         return [unicode(s, 'utf-8') for s in row]
 
     def __iter__(self):
@@ -67,7 +66,6 @@ def preProcess(column):
     and Regex. Things like casing, extra spaces, quotes and new lines can be ignored.
     """
 
-    # column = AsciiDammit.asciiDammit(column)
     column = re.sub('  +', ' ', column)
     column = re.sub('\n', ' ', column)
     column = column.strip().strip('"').strip("'").lower().strip()
