@@ -1,10 +1,19 @@
 # Dedupe CSV
 
-Command line tool for deduplicating CSV files.
+Command line tool for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
 
 [![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
 
-## Installation
+## Installation and dependencies
+
+csvdedupe requires [numpy](http://numpy.scipy.org/), which can be complicated to install. 
+If you are installing numpy for the first time, 
+[follow these instructions](http://docs.scipy.org/doc/numpy/user/install.html). You'll need to version 1.6 of numpy or higher.
+
+After numpy is set up, then install the following:
+* [fastcluster](http://math.stanford.edu/~muellner/fastcluster.html)
+* [hcluster](http://code.google.com/p/scipy-cluster/)
+* [networkx](http://networkx.github.com/)
 
 ```bash
 git clone git@github.com:datamade/csvdedupe.git
@@ -82,3 +91,27 @@ Or
                         Threshold that will maximize a weighted average of our
                         precision and recall (default: 2)
   * `-h`, `--help`            show help message and exit
+ 
+## Training
+
+The _secret sauce_ of csvdedupe is human input. In order to figure out the best rules to deduplicate a set of data, you must give it a set of labeled examples to learn from. 
+
+The more labeled examples you give it, the better the deduplication results will be. At minimum, you should try to provide __10 positive matches__ and __10 negative matches__.
+
+Here's an example labeling operation:
+
+```bash
+Phone :  2850617
+Address :  3801 s. wabash
+Zip :
+Site name :  ada s. mckinley st. thomas cdc
+
+Phone :  2850617
+Address :  3801 s wabash ave
+Zip :
+Site name :  ada s. mckinley community services - mckinley - st. thomas
+
+Do these records refer to the same thing?
+(y)es / (n)o / (u)nsure / (f)inished
+```
+
