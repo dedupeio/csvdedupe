@@ -6,7 +6,7 @@ Command line tool for deduplicating CSV files.
 
 ## Installation
 
-```console
+```bash
 git clone git@github.com:datamade/csvdedupe.git
 cd csvdedupe
 pip install "numpy>=1.6"
