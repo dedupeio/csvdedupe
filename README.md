@@ -17,21 +17,21 @@ python setup.py install
 ## Usage
 
 Provide an input file and field names
-```console
+```bash
 csvdedupe examples/csv_example_messy_input.csv --field_names "Site name" Address Zip Phone --output_file output.txt
 ```
 
 __or__
 
 Pipe it, UNIX style
-```console
+```bash
 cat examples/csv_example_messy_input.csv | csvdedupe --skip_training --field_names "Site name" Address Zip Phone > output.txt
 ```
 
 __or__
 
 Define everything in a config file
-```console
+```bash
 csvdedupe examples/csv_example_messy_input.csv --config_file=config.json
 ```
 
