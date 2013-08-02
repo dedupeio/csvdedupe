@@ -197,21 +197,3 @@ Let's sort the output by duplicate IDs, and we are ready to open it in your favo
 ```console
 > csvsort -c "Cluster ID" output.csv | sorted.csv
 ```
-
-
-``
-
-
-
-
-
-
-
-The headers are not excatly the same
-
-
-
-
-
-
-
