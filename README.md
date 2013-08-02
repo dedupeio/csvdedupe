@@ -195,5 +195,5 @@ And now we can dedupe
 Let's sort the output by duplicate IDs, and we are ready to open it in your favorite spreadsheet program.
 
 ```console
-> csvsort -c "Cluster ID" output.csv | sorted.csv
+> csvsort -c "Cluster ID" output.csv > sorted.csv
 ```
