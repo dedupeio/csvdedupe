@@ -13,10 +13,11 @@ import dedupe
 
 def preProcess(column):
     """
-    Do a little bit of data cleaning with the help of [AsciiDammit](https://github.com/tnajdek/ASCII--Dammit) 
-    and Regex. Things like casing, extra spaces, quotes and new lines can be ignored.
+    Do a little bit of data cleaning with the help of
+    [AsciiDammit](https://github.com/tnajdek/ASCII--Dammit) and
+    Regex. Things like casing, extra spaces, quotes and new lines can
+    be ignored.
     """
-
     column = AsciiDammit.asciiDammit(column)
     column = re.sub('  +', ' ', column)
     column = re.sub('\n', ' ', column)
@@ -38,9 +39,9 @@ def readData(input_file, field_names):
 
     data = {}
     reader = csv.DictReader(StringIO(input_file))
-    for row in reader:
+    for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-        row_id = int(row['Id'])
+        row_id = i
         data[row_id] = dedupe.core.frozendict(clean_row)
 
     return data
@@ -68,8 +69,8 @@ def writeResults(clustered_dupes, input_file, output_file):
         heading_row.insert(0, 'Cluster ID')
         writer.writerow(heading_row)
 
-        for row in reader:
-            row_id = int(row[0])
+        for i, row in enumerate(reader):
+            row_id = i
             cluster_id = cluster_membership[row_id]
             row.insert(0, cluster_id)
             writer.writerow(row)
@@ -91,8 +92,8 @@ def printResults(clustered_dupes, input_file):
     heading_row.insert(0, 'Cluster ID')
     _printClusterRow(heading_row)
 
-    for row in reader:
-        row_id = int(row[0])
+    for i, row in enumerate(reader):
+        row_id = i
         cluster_id = cluster_membership[row_id]
         row.insert(0, cluster_id)
         _printClusterRow(row)
