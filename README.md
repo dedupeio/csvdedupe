@@ -130,12 +130,8 @@ __or__
 distance("Tomas, "Tomás") = distance("Tomas", "Tomzs")
 ```
 
-or
-
-distance("Thomas, "Thomás") = distance("Thomas", "Thomzs")
-
-
-
+We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty
+for Latin alphabet languages.
 
 
 
