@@ -134,6 +134,83 @@ We chose the first option. While it is possible to do something more sophisticat
 for Latin alphabet languages.
 
 
+# Recipes
+
+## Combining and deduplicating files from different sources.
+
+We have a few sources of early childhood programs in Chicago. We'd like to get a canonical list. 
+Let's do it with csvdedupe, csvkit, and some other common command line tools.
+
+Our first task will be to align the files, so that we can stack the files and have the same data in the same
+columns.
+
+First let's look at the headers of the files
+
+```console
+> head -1 CPS_Early_Childhood_Portal_Scrape.csv
+"Site name","Address","Phone","Program Name","Length of Day"
+```
+
+```console
+> head -1 IDHS_child_care_provider_list.csv
+"Site name","Address","Zip Code","Phone","Fax","IDHS Provider ID"
+```
+
+So, we'll have to add "Zip Code", "Fax", and "IDHS Provider ID" 
+to ```CPS_Early_Childhood_Portal_Scrape.csv```, and we'll have to add "Program Name", 
+"Length of Day" to ```IDHS_child_care_provider_list.csv```.
+
+```console
+> cd examples
+> sed '1 s/$/,"Zip Code","Fax","IDHS Provider ID"/' CPS_Early_Childhood_Portal_Scrape.csv > input_1a.csv
+> sed '2,$s/$/,,,/' input_1a.csv > input_1b.csv
+```
+
+```console
+> sed '1 s/$/,"Program Name","Length of Day"/' IDHS_child_care_provider_list.csv > input_2a.csv
+> sed '2,$s/$/,,/' input_2a.csv > input_2b.csv
+```
+
+Now, we reorder the columns in the second to align the files.
+
+```console
+> csvcut -c "Site name","Address","Phone","Program Name","Length of Day","Zip Code","Fax","IDHS Provider ID" \
+         input_2b.csv > input_2c.csv
+```
+
+And we are finally ready to stack.
+
+```console
+> csvstack -g CPS_Early_Childhood_Portal_Scrape.csv,IDHS_child_care_provider_list.csv \
+           -n source \
+           input_1b.csv input_2c.csv > input.csv
+```
+
+And now we can dedupe
+
+```console
+> cat input.csv | csvdedupe --field_names "Site name" Address "Zip Code" Phone > output.csv
+```
+
+Let's sort the output by duplicate IDs, and we are ready to open it in your favorite spreadsheet program.
+
+```console
+> csvsort -c "Cluster ID" output.csv | sorted.csv
+```
+
+
+``
+
+
+
+
+
+
+
+The headers are not excatly the same
+
+
+
 
 
 
