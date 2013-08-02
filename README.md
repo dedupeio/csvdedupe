@@ -171,7 +171,7 @@ to ```CPS_Early_Childhood_Portal_Scrape.csv```, and we'll have to add "Program N
 > sed '2,$s/$/,,/' input_2a.csv > input_2b.csv
 ```
 
-Now, we reorder the columns in the second to align the files.
+Now, we reorder the columns in the second file to align to the first.
 
 ```console
 > csvcut -c "Site name","Address","Phone","Program Name","Length of Day","Zip Code","Fax","IDHS Provider ID" \
