@@ -115,3 +115,33 @@ Do these records refer to the same thing?
 (y)es / (n)o / (u)nsure / (f)inished
 ```
 
+### Preprocessing
+csvdedupe attempts to convert all strings to ASCII, ignores case, new lines, and padding whitespace. This is all
+probably uncontroversial except the conversion to ASCII. Basically, we had to choose between two ways of handling
+extended characters.
+
+```
+distance("Tomas", "Tomás')  = distance("Tomas", "Tomas")
+```
+
+__or__
+
+```
+distance("Tomas, "Tomás") = distance("Tomas", "Tomzs")
+```
+
+We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty
+for Latin alphabet languages.
+
+or
+
+distance("Thomas, "Thomás") = distance("Thomas", "Thomzs")
+
+
+
+
+
+
+
+
+
