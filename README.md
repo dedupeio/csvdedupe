@@ -98,6 +98,8 @@ The _secret sauce_ of csvdedupe is human input. In order to figure out the best 
 
 The more labeled examples you give it, the better the deduplication results will be. At minimum, you should try to provide __10 positive matches__ and __10 negative matches__.
 
+The results of your training will be saved in a JSON file (__training.json__, unless specified otherwise with the `--training-file` option) for future runs of csvdedupe.
+
 Here's an example labeling operation:
 
 ```bash
