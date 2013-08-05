@@ -117,7 +117,7 @@ Do these records refer to the same thing?
 (y)es / (n)o / (u)nsure / (f)inished
 ```
 
-### Preprocessing
+## Preprocessing
 csvdedupe attempts to convert all strings to ASCII, ignores case, new lines, and padding whitespace. This is all
 probably uncontroversial except the conversion to ASCII. Basically, we had to choose between two ways of handling
 extended characters.
@@ -136,14 +136,14 @@ We chose the first option. While it is possible to do something more sophisticat
 for Latin alphabet languages.
 
 
-# Recipes
+## Recipes
 
-## Combining and deduplicating files from different sources.
+### Combining and deduplicating files from different sources.
 
 Lets say we have a few sources of early childhood programs in Chicago and we'd like to get a canonical list. 
 Let's do it with `csvdedupe`, `csvkit`, and some other common command line tools.
 
-### Alignment and stacking
+#### Alignment and stacking
 Our first task will be to align the files and have the same data in the same columns for stacking.
 
 First let's look at the headers of the files
@@ -190,7 +190,7 @@ And we are finally ready to stack.
            input_1b.csv input_2c.csv > input.csv
 ```
 
-### Dedupe it!
+#### Dedupe it!
 And now we can dedupe
 
 ```console
