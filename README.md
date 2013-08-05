@@ -132,7 +132,7 @@ __or__
 distance("Tomas, "Tomás") = distance("Tomas", "Tomzs")
 ```
 
-We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty
+We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty well
 for Latin alphabet languages.
 
 
@@ -140,19 +140,21 @@ for Latin alphabet languages.
 
 ## Combining and deduplicating files from different sources.
 
-We have a few sources of early childhood programs in Chicago. We'd like to get a canonical list. 
-Let's do it with csvdedupe, csvkit, and some other common command line tools.
+Lets say we have a few sources of early childhood programs in Chicago and we'd like to get a canonical list. 
+Let's do it with `csvdedupe`, `csvkit`, and some other common command line tools.
 
-Our first task will be to align the files, so that we can stack the files and have the same data in the same
-columns.
+### Alignment and stacking
+Our first task will be to align the files and have the same data in the same columns for stacking.
 
 First let's look at the headers of the files
 
+File 1
 ```console
 > head -1 CPS_Early_Childhood_Portal_Scrape.csv
 "Site name","Address","Phone","Program Name","Length of Day"
 ```
 
+File 2
 ```console
 > head -1 IDHS_child_care_provider_list.csv
 "Site name","Address","Zip Code","Phone","Fax","IDHS Provider ID"
@@ -188,6 +190,7 @@ And we are finally ready to stack.
            input_1b.csv input_2c.csv > input.csv
 ```
 
+### Dedupe it!
 And now we can dedupe
 
 ```console
