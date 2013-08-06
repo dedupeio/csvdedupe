@@ -135,6 +135,9 @@ distance("Tomas, "Tomás") = distance("Tomas", "Tomzs")
 We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty well
 for Latin alphabet languages.
 
+## Community
+* [Dedupe Google group](https://groups.google.com/forum/?fromgroups=#!forum/open-source-deduplication)
+* IRC channel, #dedupe on irc.freenode.net
 
 ## Recipes
 
