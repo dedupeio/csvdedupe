@@ -31,11 +31,11 @@ parser.add_argument('--output_file', type=str,
                     help='CSV file to store deduplication results')
 parser.add_argument('--skip_training', action='store_true',
                     help='Skip labeling examples by user and read training from training_file only')
-parser.add_argument('--training_file', type=str, default='training.json',
+parser.add_argument('--training_file', type=str, 
                     help='Path to a new or existing file consisting of labeled training examples')
-parser.add_argument('--sample_size', type=int, default=150000,
+parser.add_argument('--sample_size', type=int, 
                     help='Number of random sample pairs to train off of')
-parser.add_argument('--recall_weight', type=int, default=2,
+parser.add_argument('--recall_weight', type=int, 
                     help='Threshold that will maximize a weighted average of our precision and recall')
 parser.add_argument('-v', '--verbose', action='count', default=0)
 
@@ -87,9 +87,10 @@ class CSVDedupe :
 
     self.output_file = configuration.get('output_file', None)
     self.skip_training = configuration.get('skip_training', False)
-    self.training_file = configuration.get('training_file', None)
+    self.training_file = configuration.get('training_file', 'training.json')
     self.sample_size = configuration.get('sample_size', 150000)
     self.recall_weight = configuration.get('recall_weight', 2)
+
 
     if 'field_definition' in configuration :
       self.field_definition = configuration['field_definition']
