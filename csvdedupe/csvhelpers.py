@@ -60,51 +60,17 @@ def writeResults(clustered_dupes, input_file, output_file):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
 
-    with open(output_file, 'w') as f:
-        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
-        reader = csv.reader(StringIO(input_file), quoting=csv.QUOTE_NONNUMERIC)
-
-        heading_row = reader.next()
-        heading_row.insert(0, 'Cluster ID')
-        writer.writerow(heading_row)
-
-        for i, row in enumerate(reader):
-            row_id = i
-            cluster_id = cluster_membership[row_id]
-            row.insert(0, cluster_id)
-            writer.writerow(row)
-
-# ## Printing results to stdout
-def printResults(clustered_dupes, input_file):
-
-    # Write our original data back out to a CSV with a new column called 
-    # 'Cluster ID' which indicates which records refer to each other.
-
-    cluster_membership = collections.defaultdict(lambda : 'x')
-    for (cluster_id, cluster) in enumerate(clustered_dupes):
-        for record_id in cluster:
-            cluster_membership[record_id] = cluster_id
+    writer = csv.writer(output_file)
 
     reader = csv.reader(StringIO(input_file))
 
     heading_row = reader.next()
     heading_row.insert(0, 'Cluster ID')
-    _printClusterRow(heading_row)
+    writer.writerow(heading_row)
 
     for i, row in enumerate(reader):
         row_id = i
         cluster_id = cluster_membership[row_id]
         row.insert(0, cluster_id)
-        _printClusterRow(row)
+        writer.writerow(row)
 
-
-def _printClusterRow(row):
-    result_str = ''
-    for value in row:
-        if type(value) == int or type(value) == float:
-            result_str += '%s,' % (value)
-        else:
-            result_str += '"%s",' % (value)
-    result_str += '\n'
-
-    sys.stdout.write(result_str)
