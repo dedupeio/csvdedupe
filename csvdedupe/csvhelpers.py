@@ -73,6 +73,7 @@ def writeResults(clustered_dupes, input_file, output_file):
             row_id = i
             cluster_id = cluster_membership[row_id]
             row.insert(0, cluster_id)
+            print row
             writer.writerow(row)
 
 # ## Printing results to stdout

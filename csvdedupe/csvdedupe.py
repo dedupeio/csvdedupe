@@ -105,7 +105,7 @@ class CSVDedupe :
     # import the specified CSV file
 
     data_d = csvhelpers.readData(self.input, self.field_names)
-
+    
     logging.info('imported %d rows', len(data_d))
 
     # sanity check for provided field names in CSV file
