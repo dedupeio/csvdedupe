@@ -61,9 +61,8 @@ def writeResults(clustered_dupes, input_file, output_file):
             cluster_membership[record_id] = cluster_id
 
     with open(output_file, 'w') as f:
-        writer = csv.writer(f)
-
-        reader = csv.reader(StringIO(input_file))
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        reader = csv.reader(StringIO(input_file), quoting=csv.QUOTE_NONNUMERIC)
 
         heading_row = reader.next()
         heading_row.insert(0, 'Cluster ID')
@@ -102,7 +101,10 @@ def printResults(clustered_dupes, input_file):
 def _printClusterRow(row):
     result_str = ''
     for value in row:
-        result_str += (str(value) + ',')
+        if type(value) == int or type(value) == float:
+            result_str += '%s,' % (value)
+        else:
+            result_str += '"%s",' % (value)
     result_str += '\n'
 
     sys.stdout.write(result_str)
