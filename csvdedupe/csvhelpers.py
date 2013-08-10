@@ -59,11 +59,9 @@ def writeResults(clustered_dupes, input_file, output_file):
     for (cluster_id, cluster) in enumerate(clustered_dupes):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
-    needs_closing = False
-    if type(output_file) != file:
-        output_file = open(output_file, 'wb')
-        needs_closing = True
+
     writer = csv.writer(output_file)
+
     reader = csv.reader(StringIO(input_file))
 
     heading_row = reader.next()
@@ -75,5 +73,3 @@ def writeResults(clustered_dupes, input_file, output_file):
         cluster_id = cluster_membership[row_id]
         row.insert(0, cluster_id)
         writer.writerow(row)
-    if needs_closing:
-        output_file.close()
