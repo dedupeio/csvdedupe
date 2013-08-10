@@ -85,13 +85,12 @@ class CSVDedupe :
     except KeyError :
       raise parser.error("You must provide field_names")
 
-    self.output_file = configuration.get('output_file', None)
+    self.output_file = configuration.get('output_file', sys.stdout)
     self.skip_training = configuration.get('skip_training', False)
     self.training_file = configuration.get('training_file', 'training.json')
     self.sample_size = configuration.get('sample_size', 150000)
     self.recall_weight = configuration.get('recall_weight', 2)
-
-
+    
     if 'field_definition' in configuration :
       self.field_definition = configuration['field_definition']
     else :
@@ -176,11 +175,7 @@ class CSVDedupe :
 
     logging.info('# duplicate sets %s' % len(clustered_dupes))
 
-    # write out our results
-    if self.output_file is None:
-      csvhelpers.printResults(clustered_dupes, self.input)
-    else :
-      csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
+    csvhelpers.writeResults(clustered_dupes, self.input, self.output_file)
 
 
 def launch_new_instance():
