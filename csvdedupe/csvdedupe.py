@@ -177,7 +177,7 @@ class CSVDedupe :
 
     # write out our results
     if self.output_file :
-      with open(self.output_files, 'w') as output_file :
+      with open(self.output_file, 'w') as output_file :
         csvhelpers.writeResults(clustered_dupes, self.input, output_file)
     else :
         csvhelpers.writeResults(clustered_dupes, self.input, sys.stdout)
