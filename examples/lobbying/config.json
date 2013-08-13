@@ -1,0 +1,18 @@
+{
+  "field_names": [],
+  "field_definition" : {"CLIENT NAME" : {"type" : "String"},
+                        "Full Address"   : {"type" : "String"},
+                        "CLIENT CITY"   : {"type" : "String"},
+                        "CLIENT STATE"   : {"type" : "String"},
+                        "CLIENT ZIP"   : {"type" : "String"},
+                        "source"   : {"type" : "String"},	
+                        "Vendor ID"       : {"type" : "String",
+		  	    	             "Has Missing" : true},
+			"Client Industry"     : {"type" : "String", 
+				       	         "Has Missing" : true}},
+  "output_file": "output.csv",
+  "skip_training": false,
+  "training_file": "training.json",
+  "sample_size": 150000,
+  "recall_weight": 2
+}
