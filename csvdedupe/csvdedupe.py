@@ -85,7 +85,7 @@ class CSVDedupe :
     except KeyError :
       raise parser.error("You must provide field_names")
 
-    self.output_file = configuration.get('output_file', sys.stdout)
+    self.output_file = configuration.get('output_file', None)
     self.skip_training = configuration.get('skip_training', False)
     self.training_file = configuration.get('training_file', 'training.json')
     self.sample_size = configuration.get('sample_size', 150000)
