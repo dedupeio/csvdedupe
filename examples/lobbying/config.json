@@ -5,14 +5,10 @@
                         "CLIENT CITY"   : {"type" : "String"},
                         "CLIENT STATE"   : {"type" : "String"},
                         "CLIENT ZIP"   : {"type" : "String"},
-                        "source"   : {"type" : "String"},	
-                        "Vendor ID"       : {"type" : "String",
-		  	    	             "Has Missing" : true},
-			"Client Industry"     : {"type" : "String", 
-				       	         "Has Missing" : true}},
+                        "source"   : {"type" : "String"}},	
   "output_file": "output.csv",
   "skip_training": false,
   "training_file": "training.json",
   "sample_size": 150000,
-  "recall_weight": 2
+  "recall_weight": 3
 }
