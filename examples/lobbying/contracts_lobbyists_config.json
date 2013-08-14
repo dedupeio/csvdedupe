@@ -1,0 +1,13 @@
+{
+  "field_names": [],
+  "field_definition" : {"CLIENT NAME" : {"type" : "String"},
+                        "Full Address"   : {"type" : "String"},
+                        "CLIENT CITY"   : {"type" : "String"},
+                        "CLIENT STATE"   : {"type" : "String"},
+                        "CLIENT ZIP"   : {"type" : "String"},
+                        "source"   : {"type" : "String"}},	
+  "skip_training": false,
+  "training_file": "contracts_lobbyists_training.json",
+  "sample_size": 150000,
+  "recall_weight": 3
+}
