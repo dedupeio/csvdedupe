@@ -109,8 +109,10 @@ class CSVDedupe :
 
     # sanity check for provided field names in CSV file
     for field in self.field_definition :
-      if not field in data_d[0]:
-        raise parser.error("Could not find field '" + field + "' in input")
+      if self.field_definition[field]['type'] != 'Interaction' :
+        if not field in data_d[0]:
+        
+          raise parser.error("Could not find field '" + field + "' in input")
 
     # Set up our data sample
     logging.info('taking a sample of %d possible pairs', self.sample_size)
