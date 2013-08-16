@@ -205,3 +205,5 @@ Let's sort the output by duplicate IDs, and we are ready to open it in your favo
 ```console
 > csvsort -c "Cluster ID" output.csv > sorted.csv
 ```
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/88cda639ab635a100d23de5948ffbef5 "githalytics.com")](http://githalytics.com/datamade/csvdedupe)
