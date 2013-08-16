@@ -2,6 +2,8 @@
 
 Command line tool for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
 
+[Read more about csvdedupe on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-cvsdedupe/)
+
 [![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
 
 ## Installation and dependencies
