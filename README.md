@@ -1,4 +1,4 @@
-# Dedupe CSV
+# csvdedupe
 
 Command line tool for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
 
