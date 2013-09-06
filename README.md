@@ -119,6 +119,13 @@ Do these records refer to the same thing?
 (y)es / (n)o / (u)nsure / (f)inished
 ```
 
+## Output
+`csvdedupe` attempts to identify all the rows in the csv that refer to the same thing. Each group of
+such records are called a cluster. `csvdedupe` returns your input file with and additional column called `Cluster ID`,
+that either is the numeric id (zero-indexed) of a cluster of grouped records or an `x` if csvdedupe believes
+the record doesn't belong to any cluster.
+
+
 ## Preprocessing
 csvdedupe attempts to convert all strings to ASCII, ignores case, new lines, and padding whitespace. This is all
 probably uncontroversial except the conversion to ASCII. Basically, we had to choose between two ways of handling
