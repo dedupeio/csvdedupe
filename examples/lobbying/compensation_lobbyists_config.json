@@ -3,9 +3,12 @@
   "field_definition" : {"LOBBYIST LAST NAME" : {"type" : "String"},
 			"LOBBYIST FIRST NAME" : {"type" : "String"},
 			"LOBBYIST MIDDLE INITIAL" : {"type" : "String"},
-			"CLIENT NAME" : {"type" : "String"}},
+			"CLIENT NAME" : {"type" : "String"},
+                        "source"   : {"type" : "Source", 
+                                      "Source Names" : ["lobbyists", 
+							"compensation"]}},
   "skip_training": false,
   "training_file": "compensation_lobbyists_training.json",
   "sample_size": 150000,
-  "recall_weight": 3
+  "recall_weight": 0.5
 }

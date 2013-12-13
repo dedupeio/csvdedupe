@@ -5,9 +5,10 @@
                         "CLIENT CITY"   : {"type" : "String"},
                         "CLIENT STATE"   : {"type" : "String"},
                         "CLIENT ZIP"   : {"type" : "String"},
-                        "source"   : {"type" : "String"}},	
+                        "source"   : {"type" : "Source", 
+                                      "Source Names" : ["lobbyists", "contracts"]}},
   "skip_training": false,
   "training_file": "contracts_lobbyists_training.json",
   "sample_size": 150000,
-  "recall_weight": 3
+  "recall_weight": 1
 }
