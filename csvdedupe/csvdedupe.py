@@ -10,7 +10,6 @@ import shutil
 
 import csvhelpers
 import dedupe
-import labeler
 
 import itertools
 
@@ -114,13 +113,13 @@ class CSVDedupe :
         
           raise parser.error("Could not find field '" + field + "' in input")
 
-    # Set up our data sample
-    logging.info('taking a sample of %d possible pairs', self.sample_size)
-    data_sample = dedupe.dataSample(data_d, self.sample_size)
-
     logging.info('using fields: %s' % self.field_definition.keys())
     # # Create a new deduper object and pass our data model to it.
     deduper = dedupe.Dedupe(self.field_definition)
+
+    # Set up our data sample
+    logging.info('taking a sample of %d possible pairs', self.sample_size)
+    deduper.sample(data_d, self.sample_size)
 
     # If we have training data saved from a previous run of dedupe,
     # look for it an load it in.
@@ -135,7 +134,8 @@ class CSVDedupe :
     if not self.skip_training:
       logging.info('starting active labeling...')
 
-      deduper.train(data_sample, labeler.label)
+      dedupe.consoleLabel(deduper)
+      deduper.train()
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
@@ -146,15 +146,6 @@ class CSVDedupe :
     # ## Blocking
 
     logging.info('blocking...')
-    # Initialize our blocker. We'll learn our blocking rules if we haven't
-    # loaded them from a saved settings file.
-    blocker = deduper.blockingFunction()
-
-    # Load all the original data in to memory and place
-    # them in to blocks. Each record can be blocked in many ways, so for
-    # larger data, memory will be a limiting factor.
-
-    blocked_data = dedupe.blockData(data_d, blocker)
 
     # ## Clustering
 
@@ -167,13 +158,13 @@ class CSVDedupe :
 
     logging.info('finding a good threshold with a recall_weight of %s' % 
                  self.recall_weight)
-    threshold = deduper.goodThreshold(blocked_data, recall_weight=self.recall_weight)
+    threshold = deduper.threshold(data_d, recall_weight=self.recall_weight)
 
     # `duplicateClusters` will return sets of record IDs that dedupe
     # believes are all referring to the same entity.
 
     logging.info('clustering...')
-    clustered_dupes = deduper.duplicateClusters(blocked_data, threshold)
+    clustered_dupes = deduper.match(data_d, threshold)
 
     logging.info('# duplicate sets %s' % len(clustered_dupes))
 
