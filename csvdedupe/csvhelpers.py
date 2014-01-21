@@ -73,3 +73,34 @@ def writeResults(clustered_dupes, input_file, output_file):
         cluster_id = cluster_membership[row_id]
         row.insert(0, cluster_id)
         writer.writerow(row)
+
+# ## Writing results
+def writeUniqueResults(clustered_dupes, input_file, output_file):
+
+    # Write our original data back out to a CSV with a new column called 
+    # 'Cluster ID' which indicates which records refer to each other.
+
+    logging.info('saving unique results to: %s' % output_file)
+
+    cluster_membership = {}
+    for (cluster_id, cluster) in enumerate(clustered_dupes):
+        for record_id in cluster:
+            cluster_membership[record_id] = cluster_id
+
+    writer = csv.writer(output_file)
+
+    reader = csv.reader(StringIO(input_file))
+
+    heading_row = reader.next()
+    writer.writerow(heading_row)
+
+    seen_clusters = set()
+    for i, row in enumerate(reader):
+        row_id = i
+        if row_id in cluster_membership: 
+            cluster_id = cluster_membership[row_id]
+            if cluster_id not in seen_clusters:
+                writer.writerow(row)
+                seen_clusters.add(cluster_id)
+        else:
+            writer.writerow(row)

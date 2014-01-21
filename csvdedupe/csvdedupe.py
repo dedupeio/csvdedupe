@@ -36,6 +36,8 @@ parser.add_argument('--sample_size', type=int,
                     help='Number of random sample pairs to train off of')
 parser.add_argument('--recall_weight', type=int, 
                     help='Threshold that will maximize a weighted average of our precision and recall')
+parser.add_argument('--destructive', action='store_true',
+                    help='Output file will contain unique records only')
 parser.add_argument('-v', '--verbose', action='count', default=0)
 
 class CSVDedupe :
@@ -89,6 +91,7 @@ class CSVDedupe :
     self.training_file = configuration.get('training_file', 'training.json')
     self.sample_size = configuration.get('sample_size', 150000)
     self.recall_weight = configuration.get('recall_weight', 2)
+    self.destructive = configuration.get('destructive', False)
     
     if 'field_definition' in configuration :
       self.field_definition = configuration['field_definition']
@@ -169,12 +172,16 @@ class CSVDedupe :
 
     logging.info('# duplicate sets %s' % len(clustered_dupes))
 
+    write_function = csvhelpers.writeResults
     # write out our results
+    if self.destructive:
+      write_function = csvhelpers.writeUniqueResults
+
     if self.output_file :
       with open(self.output_file, 'w') as output_file :
-        csvhelpers.writeResults(clustered_dupes, self.input, output_file)
+        write_function(clustered_dupes, self.input, output_file)
     else :
-        csvhelpers.writeResults(clustered_dupes, self.input, sys.stdout)
+        write_function(clustered_dupes, self.input, sys.stdout)
 
 
 def launch_new_instance():
