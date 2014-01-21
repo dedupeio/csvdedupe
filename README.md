@@ -25,6 +25,14 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
+## Testing
+
+Unit tests of core csvdedupe functions
+```bash
+pip install -r requirements-test.txt
+nosetests
+```
+
 ## Usage
 
 Provide an input file and field names
