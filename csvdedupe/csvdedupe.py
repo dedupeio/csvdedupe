@@ -127,7 +127,7 @@ class CSVDedupe :
 
     if os.path.exists(self.training_file):
       logging.info('reading labeled examples from %s' % self.training_file)
-      deduper.train(data_sample, str(self.training_file))
+      deduper.readTraining(self.training_file)
     elif self.skip_training:
       raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
@@ -142,6 +142,7 @@ class CSVDedupe :
       deduper.writeTraining(self.training_file)
     else:
       logging.info('skipping the training step')
+      deduper.train()
 
     # ## Blocking
 
