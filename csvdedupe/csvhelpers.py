@@ -41,7 +41,10 @@ def readData(input_file, field_names, prefix=None):
     reader = csv.DictReader(StringIO(input_file))
     for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-        row_id = ':'.join([prefix, str(i)])
+        if prefix :
+            row_id = ':'.join([prefix, str(i)])
+        else :
+            row_id = i
         data[row_id] = dedupe.core.frozendict(clean_row)
 
     return data
