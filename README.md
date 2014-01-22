@@ -1,6 +1,14 @@
-# Dedupe CSV
+# csvdedupe
 
-Command line tool for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
+Command line tools for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
+
+`csvdedupe` take a messy input file or STDIN pipe and identify duplicates
+
+`csvlink` take two CSV files and find matches between them
+
+[Read more about csvdedupe on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-cvsdedupe/)
+
+![Dedupe](https://raw.github.com/datamade/csvdedupe/master/dedupe.jpg)
 
 [![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
 
@@ -23,25 +31,29 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
-## Usage
+## csvdedupe usage
 
 Provide an input file and field names
 ```bash
-csvdedupe examples/csv_example_messy_input.csv --field_names "Site name" Address Zip Phone --output_file output.txt
+csvdedupe examples/csv_example_messy_input.csv \
+          --field_names "Site name" Address Zip Phone \
+          --output_file output.csv
 ```
 
 __or__
 
 Pipe it, UNIX style
 ```bash
-cat examples/csv_example_messy_input.csv | csvdedupe --skip_training --field_names "Site name" Address Zip Phone > output.txt
+cat examples/csv_example_messy_input.csv | csvdedupe --skip_training \
+          --field_names "Site name" Address Zip Phone > output.csv
 ```
 
 __or__
 
 Define everything in a config file
 ```bash
-csvdedupe examples/csv_example_messy_input.csv --config_file=config.json
+csvdedupe examples/csv_example_messy_input.csv \
+            --config_file=config.json
 ```
 
 ### Example config file
@@ -79,6 +91,91 @@ Or
   * `--output_file OUTPUT_FILE`
                         CSV file to store deduplication results (default:
                         None)
+  * `--destructive`         Output file will contain unique records only
+  * `--skip_training`       Skip labeling examples by user and read training from
+                        training_file only (default: False)
+  * `--training_file TRAINING_FILE`
+                        Path to a new or existing file consisting of labeled
+                        training examples (default: training.json)
+  * `--sample_size SAMPLE_SIZE`
+                        Number of random sample pairs to train off of
+                        (default: 150000)
+  * `--recall_weight RECALL_WEIGHT`
+                        Threshold that will maximize a weighted average of our
+                        precision and recall (default: 2)
+  * `-h`, `--help`            show help message and exit
+
+
+## csvlink usage
+
+Provide an input file and field names
+```bash
+csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
+            --field_names name address city cuisine \
+            --output_file output.csv
+```
+
+Line up different field names from each file
+```bash
+csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
+            --field_names_1 name address city cuisine \
+            --field_names_2 restaurant street city type \
+            --output_file output.csv
+```
+
+Pipe the output to STDOUT
+```bash
+csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
+            --field_names name address city cuisine \
+            > output.csv
+```
+
+__or__
+
+Define everything in a config file
+```bash
+csvdedupe examples/restaurant-1.csv examples/restaurant-2.csv \
+              --config_file=config.json
+```
+
+### Example config file
+
+```json
+{
+  "field_names_1": ["name", "address", "city", "cuisine"],
+  "field_names_2": ["restaurant", "street", "city", "type"],
+  "field_definition" : {"name":    {"type" : "String"},
+                        "address": {"type" : "String"},
+                        "city":    {"type" : "String",
+                                    "Has Missing" : true},
+                        "cuisine": {"type" : "String",
+                                    "Has Missing" : true}},
+  "output_file": "examples/output.csv",
+  "skip_training": false,
+  "training_file": "training.json",
+  "sample_size": 150000,
+  "recall_weight": 2
+}
+```
+
+### Arguments:
+
+#### Required
+
+  * `input` two CSV file names to join together
+
+Either
+  * `--config_file` Path to configuration file.
+
+Or
+  * `--field_names_1` List of column names in first file for dedupe to pay attention to
+  * `--field_names_2` List of column names in second file for dedupe to pay attention to
+
+#### Optional
+  * `--output_file OUTPUT_FILE`
+                        CSV file to store deduplication results (default:
+                        None)
+  * `--inner_join`          Only return matches between datasets
   * `--skip_training`       Skip labeling examples by user and read training from
                         training_file only (default: False)
   * `--training_file TRAINING_FILE`
@@ -117,6 +214,16 @@ Do these records refer to the same thing?
 (y)es / (n)o / (u)nsure / (f)inished
 ```
 
+## Output
+`csvdedupe` attempts to identify all the rows in the csv that refer to the same thing. Each group of
+such records are called a cluster. `csvdedupe` returns your input file with an additional column called `Cluster ID`,
+that either is the numeric id (zero-indexed) of a cluster of grouped records or an `x` if csvdedupe believes
+the record doesn't belong to any cluster.
+
+`csvlink` operates in much the same way as `csvdedupe`, but will flatten both CSVs in to one
+output file similar to a SQL [OUTER JOIN](http://stackoverflow.com/questions/38549/difference-between-inner-and-outer-join) statement. You can use the `--inner_join` flag to exclude rows that don't match across the two input files, much like an INNER JOIN.
+
+
 ## Preprocessing
 csvdedupe attempts to convert all strings to ASCII, ignores case, new lines, and padding whitespace. This is all
 probably uncontroversial except the conversion to ASCII. Basically, we had to choose between two ways of handling
@@ -134,6 +241,14 @@ distance("Tomas, "Tomás") = distance("Tomas", "Tomzs")
 
 We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty well
 for Latin alphabet languages.
+
+## Testing
+
+Unit tests of core csvdedupe functions
+```bash
+pip install -r requirements-test.txt
+nosetests
+```
 
 ## Community
 * [Dedupe Google group](https://groups.google.com/forum/?fromgroups=#!forum/open-source-deduplication)
@@ -205,3 +320,5 @@ Let's sort the output by duplicate IDs, and we are ready to open it in your favo
 ```console
 > csvsort -c "Cluster ID" output.csv > sorted.csv
 ```
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/88cda639ab635a100d23de5948ffbef5 "githalytics.com")](http://githalytics.com/datamade/csvdedupe)
