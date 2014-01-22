@@ -68,9 +68,14 @@ class CSVLink :
     if len(configuration['input']) == 2:
       try :
         self.input_1 = open(configuration['input'][0], 'rU').read()
+      except IOError:
+        raise parser.error("Could not find the file %s" % (configuration['input'][0],))
+
+      try : 
         self.input_2 = open(configuration['input'][1], 'rU').read()
       except IOError:
-        raise parser.error("Could not find the file %s" % (configuration['input'],))
+        raise parser.error("Could not find the file %s" % (configuration['input'][1],))
+      
     else:
       raise parser.error("You must provide two input files.")
 
@@ -84,7 +89,7 @@ class CSVLink :
         self.field_names_1 = configuration['field_names_1']
         self.field_names_2 = configuration['field_names_2']
     else :
-        raise parser.error("You must provide field_names of field_names_1 and fiels_2")
+        raise parser.error("You must provide field_names of field_names_1 and field_names_2")
 
     self.inner_join = configuration.get('inner_join', False)
     self.output_file = configuration.get('output_file', None)
@@ -113,6 +118,16 @@ class CSVLink :
                                  self.field_names_2,
                                  prefix='input_2')
 
+    # sanity check for provided field names in CSV file
+    for field in self.field_names_1 :
+      if field not in data_1.values()[0]:
+        raise parser.error("Could not find field '" + field + "' in input")
+
+    for field in self.field_names_2 :
+      if field not in data_2.values()[0]:
+        raise parser.error("Could not find field '" + field + "' in input")
+
+
     if self.field_names_1 != self.field_names_2 :
       for record_id, record in data_2.items() :
         remapped_record = {}
@@ -122,13 +137,6 @@ class CSVLink :
     
     logging.info('imported %d rows from file 1', len(data_1))
     logging.info('imported %d rows from file 2', len(data_2))
-
-    # sanity check for provided field names in CSV file
-    for field in self.field_definition :
-      if self.field_definition[field]['type'] != 'Interaction' :
-        if (field not in data_1.values()[0] or field not in data_2.values()[0]):
-        
-          raise parser.error("Could not find field '" + field + "' in input")
 
     logging.info('using fields: %s' % self.field_definition.keys())
     # # Create a new deduper object and pass our data model to it.
