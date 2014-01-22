@@ -25,7 +25,7 @@ def preProcess(column):
     return column
 
 
-def readData(input_file, field_names):
+def readData(input_file, field_names, prefix=None):
     """
     Read in our data from a CSV file and create a dictionary of records, 
     where the key is a unique record ID and each value is a 
@@ -41,7 +41,7 @@ def readData(input_file, field_names):
     reader = csv.DictReader(StringIO(input_file))
     for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-        row_id = i
+        row_id = ':'.join([prefix, str(i)])
         data[row_id] = dedupe.core.frozendict(clean_row)
 
     return data
@@ -56,7 +56,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     logging.info('saving results to: %s' % output_file)
 
     cluster_membership = collections.defaultdict(lambda : 'x')
-    for (cluster_id, cluster) in enumerate(clustered_dupes):
+    for cluster_id, cluster in enumerate(clustered_dupes):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
 
@@ -104,3 +104,36 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
                 seen_clusters.add(cluster_id)
         else:
             writer.writerow(row)
+
+def writeLinkedResults(clustered_dupes, input_1, input_2, output_file) :
+    logging.info('saving unique results to: %s' % output_file)
+
+    cluster_membership = collections.defaultdict(lambda : 'x')
+    for (cluster_id, cluster) in enumerate(clustered_dupes):
+        for record_id in cluster:
+            cluster_membership[record_id] = cluster_id
+
+    writer = csv.writer(output_file)
+
+    reader = csv.reader(StringIO(input_1))
+
+    heading_row = reader.next()
+    heading_row.insert(0, 'Cluster ID')
+    writer.writerow(heading_row)
+
+    for i, row in enumerate(reader):
+        row_id = 'input_1:' + str(i)
+        cluster_id = cluster_membership[row_id]
+        row.insert(0, cluster_id)
+        writer.writerow(row)
+
+    reader = csv.reader(StringIO(input_2))
+    reader.next()
+
+    for i, row in enumerate(reader):
+        row_id = 'input_2:' + str(i)
+        cluster_id = cluster_membership[row_id]
+        row.insert(0, cluster_id)
+        writer.writerow(row)
+
+

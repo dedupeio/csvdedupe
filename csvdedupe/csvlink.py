@@ -26,6 +26,10 @@ parser.add_argument('--config_file', type=str,
                     help='Path to configuration file. Must provide either a config_file or input and filed_names.')
 parser.add_argument('--field_names', type=str, nargs="+",
                     help='List of column names for dedupe to pay attention to')
+parser.add_argument('--fields_1', type=str, nargs="+",
+                    help='List of column names for first dataset')
+parser.add_argument('--fields_2', type=str, nargs="+",
+                    help='List of column names for second dataset')
 parser.add_argument('--output_file', type=str,
                     help='CSV file to store deduplication results')
 parser.add_argument('--skip_training', action='store_true',
@@ -68,10 +72,18 @@ class CSVLink :
     else:
       raise parser.error("You must provide two input files.")
 
-    try : 
-      self.field_names = configuration['field_names']
-    except KeyError :
-      raise parser.error("You must provide field_names")
+    if 'field_names' in configuration :
+      if 'fields_1' in configuration or 'fields_2' in configuration :
+        raise parser.error("You should only define field_names or individual dataset fields (fields_1 and fields_2")
+      else :
+        self.fields_1 = configuration['field_names']
+        self.fields_2  = configuration['field_names']
+    elif 'fields_1' in configuration and 'fields_2' in configuration :
+        self.fields_1 = configuration['fields_1']
+        self.fields_2 = configuration['fields_2']
+    else :
+        raise parser.error("You must provide field_names of fields_1 and fiels_2")
+
 
     self.output_file = configuration.get('output_file', None)
     self.skip_training = configuration.get('skip_training', False)
@@ -83,7 +95,7 @@ class CSVLink :
       self.field_definition = configuration['field_definition']
     else :
       self.field_definition = dict((field, {'type' : 'String'}) 
-                                   for field in self.field_names)
+                                   for field in self.fields_1)
       
 
   def main(self) :
@@ -92,8 +104,19 @@ class CSVLink :
     data_2 = {}
     # import the specified CSV file
 
-    data_1 = csvhelpers.readData(self.input_1, self.field_names)
-    data_2 = csvhelpers.readData(self.input_2, self.field_names)
+    data_1 = csvhelpers.readData(self.input_1, 
+                                 self.fields_1,
+                                 prefix='input_1')
+    data_2 = csvhelpers.readData(self.input_2, 
+                                 self.fields_2,
+                                 prefix='input_2')
+
+    if self.fields_1 != self.fields_2 :
+      for record_id, record in data_2.items() :
+        remapped_record = {}
+        for new_field, old_field in zip(self.fields_1, self.fields_2) :
+          remapped_record[new_field] = record[old_field]
+        data_2[record_id] = remapped_record
     
     logging.info('imported %d rows from file 1', len(data_1))
     logging.info('imported %d rows from file 2', len(data_2))
@@ -101,7 +124,7 @@ class CSVLink :
     # sanity check for provided field names in CSV file
     for field in self.field_definition :
       if self.field_definition[field]['type'] != 'Interaction' :
-        if (field not in data_1[0] or field not in data_2[0]):
+        if (field not in data_1.values()[0] or field not in data_2.values()[0]):
         
           raise parser.error("Could not find field '" + field + "' in input")
 
@@ -161,14 +184,14 @@ class CSVLink :
 
     logging.info('# duplicate sets %s' % len(clustered_dupes))
 
-    write_function = csvhelpers.writeResults
+    write_function = csvhelpers.writeLinkedResults
     # write out our results
 
     if self.output_file :
       with open(self.output_file, 'w') as output_file :
-        write_function(clustered_dupes, self.input, output_file)
+        write_function(clustered_dupes, self.input_1, self.input_2, output_file)
     else :
-        write_function(clustered_dupes, self.input, sys.stdout)
+        write_function(clustered_dupes, self.input_1, self.input_2, sys.stdout)
 
 
 def launch_new_instance():
