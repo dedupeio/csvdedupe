@@ -26,9 +26,9 @@ parser.add_argument('--config_file', type=str,
                     help='Path to configuration file. Must provide either a config_file or input and filed_names.')
 parser.add_argument('--field_names', type=str, nargs="+",
                     help='List of column names for dedupe to pay attention to')
-parser.add_argument('--fields_1', type=str, nargs="+",
+parser.add_argument('--field_names_1', type=str, nargs="+",
                     help='List of column names for first dataset')
-parser.add_argument('--fields_2', type=str, nargs="+",
+parser.add_argument('--field_names_2', type=str, nargs="+",
                     help='List of column names for second dataset')
 parser.add_argument('--inner_join', action='store_true',
                     help='Only return matches between datasets') 
@@ -75,16 +75,16 @@ class CSVLink :
       raise parser.error("You must provide two input files.")
 
     if 'field_names' in configuration :
-      if 'fields_1' in configuration or 'fields_2' in configuration :
-        raise parser.error("You should only define field_names or individual dataset fields (fields_1 and fields_2")
+      if 'field_names_1' in configuration or 'field_names_2' in configuration :
+        raise parser.error("You should only define field_names or individual dataset fields (field_names_1 and field_names_2")
       else :
-        self.fields_1 = configuration['field_names']
-        self.fields_2  = configuration['field_names']
-    elif 'fields_1' in configuration and 'fields_2' in configuration :
-        self.fields_1 = configuration['fields_1']
-        self.fields_2 = configuration['fields_2']
+        self.field_names_1 = configuration['field_names']
+        self.field_names_2  = configuration['field_names']
+    elif 'field_names_1' in configuration and 'field_names_2' in configuration :
+        self.field_names_1 = configuration['field_names_1']
+        self.field_names_2 = configuration['field_names_2']
     else :
-        raise parser.error("You must provide field_names of fields_1 and fiels_2")
+        raise parser.error("You must provide field_names of field_names_1 and fiels_2")
 
     self.inner_join = configuration.get('inner_join', False)
     self.output_file = configuration.get('output_file', None)
@@ -97,7 +97,7 @@ class CSVLink :
       self.field_definition = configuration['field_definition']
     else :
       self.field_definition = dict((field, {'type' : 'String'}) 
-                                   for field in self.fields_1)
+                                   for field in self.field_names_1)
       
 
   def main(self) :
@@ -107,16 +107,16 @@ class CSVLink :
     # import the specified CSV file
 
     data_1 = csvhelpers.readData(self.input_1, 
-                                 self.fields_1,
+                                 self.field_names_1,
                                  prefix='input_1')
     data_2 = csvhelpers.readData(self.input_2, 
-                                 self.fields_2,
+                                 self.field_names_2,
                                  prefix='input_2')
 
-    if self.fields_1 != self.fields_2 :
+    if self.field_names_1 != self.field_names_2 :
       for record_id, record in data_2.items() :
         remapped_record = {}
-        for new_field, old_field in zip(self.fields_1, self.fields_2) :
+        for new_field, old_field in zip(self.field_names_1, self.field_names_2) :
           remapped_record[new_field] = record[old_field]
         data_2[record_id] = remapped_record
     
