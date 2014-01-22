@@ -31,14 +31,6 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
-## Testing
-
-Unit tests of core csvdedupe functions
-```bash
-pip install -r requirements-test.txt
-nosetests
-```
-
 ## csvdedupe usage
 
 Provide an input file and field names
@@ -152,6 +144,12 @@ csvdedupe examples/restaurant-1.csv examples/restaurant-2.csv \
 {
   "field_names_1": ["name", "address", "city", "cuisine"],
   "field_names_2": ["restaurant", "street", "city", "type"],
+  "field_definition" : {"name" : {"type" : "String"},
+                        "address"   : {"type" : "String"},
+                        "city"       : {"type" : "String",
+                                       "Has Missing" : true},
+                        "cuisine"     : {"type" : "String",
+                                       "Has Missing" : true}},
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
@@ -222,6 +220,9 @@ such records are called a cluster. `csvdedupe` returns your input file with an a
 that either is the numeric id (zero-indexed) of a cluster of grouped records or an `x` if csvdedupe believes
 the record doesn't belong to any cluster.
 
+`csvlink` operates in much the same way as `csvdedupe`, but will flatten both CSVs in to one
+output file similar to a SQL [OUTER JOIN](http://stackoverflow.com/questions/38549/difference-between-inner-and-outer-join) statement. You can use the `--inner_join` flag to exclude rows that don't match across the two input files, much like an INNER JOIN.
+
 
 ## Preprocessing
 csvdedupe attempts to convert all strings to ASCII, ignores case, new lines, and padding whitespace. This is all
@@ -240,6 +241,14 @@ distance("Tomas, "Tomás") = distance("Tomas", "Tomzs")
 
 We chose the first option. While it is possible to do something more sophisticated, this option seems to work pretty well
 for Latin alphabet languages.
+
+## Testing
+
+Unit tests of core csvdedupe functions
+```bash
+pip install -r requirements-test.txt
+nosetests
+```
 
 ## Community
 * [Dedupe Google group](https://groups.google.com/forum/?fromgroups=#!forum/open-source-deduplication)
