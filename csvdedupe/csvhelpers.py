@@ -42,7 +42,7 @@ def readData(input_file, field_names, prefix=None):
     for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
         if prefix :
-            row_id = ':'.join([prefix, str(i)])
+            row_id = (prefix, i)
         else :
             row_id = i
         data[row_id] = dedupe.core.frozendict(clean_row)
@@ -108,35 +108,42 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
         else:
             writer.writerow(row)
 
-def writeLinkedResults(clustered_dupes, input_1, input_2, output_file) :
+def writeLinkedResults(clustered_pairs, input_1, input_2, output_file, inner_join = False) :
     logging.info('saving unique results to: %s' % output_file)
 
-    cluster_membership = collections.defaultdict(lambda : 'x')
-    for (cluster_id, cluster) in enumerate(clustered_dupes):
-        for record_id in cluster:
-            cluster_membership[record_id] = cluster_id
+    matched_records = []
+    seen_1 = set()
+    seen_2 = set()
+
+    input_1 = [row for row in csv.reader(StringIO(input_1))]
+    row_header = input_1.pop(0)
+    length_1 = len(row_header)
+
+    input_2 = [row for row in csv.reader(StringIO(input_2))]
+    row_header_2 = input_2.pop(0)
+    length_2 = len(row_header_2)
+    row_header += row_header_2
+
+    for pair in clustered_pairs :
+        index_1 = pair[0][1]
+        index_2 = pair[1][1]
+
+        matched_records.append(input_1[index_1] + input_2[index_2])
+        seen_1.add(index_1)
+        seen_2.add(index_2)
 
     writer = csv.writer(output_file)
+    writer.writerow(row_header)
 
-    reader = csv.reader(StringIO(input_1))
+    for matches in matched_records :
+        writer.writerow(matches)
+   
+    if not inner_join :
 
-    heading_row = reader.next()
-    heading_row.insert(0, 'Cluster ID')
-    writer.writerow(heading_row)
+        for i, row in enumerate(input_1) :
+            if i not in seen_1 :
+                writer.writerow(row + [None]*length_2)
 
-    for i, row in enumerate(reader):
-        row_id = 'input_1:' + str(i)
-        cluster_id = cluster_membership[row_id]
-        row.insert(0, cluster_id)
-        writer.writerow(row)
-
-    reader = csv.reader(StringIO(input_2))
-    reader.next()
-
-    for i, row in enumerate(reader):
-        row_id = 'input_2:' + str(i)
-        cluster_id = cluster_membership[row_id]
-        row.insert(0, cluster_id)
-        writer.writerow(row)
-
-
+        for i, row in enumerate(input_2) :
+            if i not in seen_2 :
+                writer.writerow([None]*length_1 + row)

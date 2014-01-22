@@ -30,6 +30,8 @@ parser.add_argument('--fields_1', type=str, nargs="+",
                     help='List of column names for first dataset')
 parser.add_argument('--fields_2', type=str, nargs="+",
                     help='List of column names for second dataset')
+parser.add_argument('--inner_join', action='store_true',
+                    help='Only return matches between datasets') 
 parser.add_argument('--output_file', type=str,
                     help='CSV file to store deduplication results')
 parser.add_argument('--skip_training', action='store_true',
@@ -84,7 +86,7 @@ class CSVLink :
     else :
         raise parser.error("You must provide field_names of fields_1 and fiels_2")
 
-
+    self.inner_join = configuration.get('inner_join', False)
     self.output_file = configuration.get('output_file', None)
     self.skip_training = configuration.get('skip_training', False)
     self.training_file = configuration.get('training_file', 'training.json')
@@ -189,9 +191,17 @@ class CSVLink :
 
     if self.output_file :
       with open(self.output_file, 'w') as output_file :
-        write_function(clustered_dupes, self.input_1, self.input_2, output_file)
+        write_function(clustered_dupes, 
+                       self.input_1, 
+                       self.input_2, 
+                       output_file,
+                       self.inner_join)
     else :
-        write_function(clustered_dupes, self.input_1, self.input_2, sys.stdout)
+        write_function(clustered_dupes, 
+                       self.input_1, 
+                       self.input_2, 
+                       sys.stdout,
+                       self.inner_join)
 
 
 def launch_new_instance():
