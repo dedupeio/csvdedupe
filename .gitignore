@@ -16,3 +16,4 @@ logfile
 *.egg-info
 output.csv
 *_cleaned.csv
+dist
