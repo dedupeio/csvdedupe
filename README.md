@@ -1,7 +1,7 @@
 # csvdedupe
 
 Command line tools for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
- 
+
 `csvdedupe` take a messy input file or STDIN pipe and identify duplicates
 
 `csvlink` take two CSV files and find matches between them
