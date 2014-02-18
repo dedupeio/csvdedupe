@@ -8,7 +8,6 @@ Command line tools for using the [dedupe python library](https://github.com/open
 
 [Read more about csvdedupe on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-cvsdedupe/)
 
-![Dedupe](https://raw.github.com/datamade/csvdedupe/master/dedupe.jpg)
 
 [![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
 
