@@ -1,0 +1,15 @@
+{
+  "field_names": ["Vendor Name", "Vendor ID", "Address 1", 
+		  "Address 2", "City", "State", "Zip"],
+  "field_definition" : {"Vendor Name" : {"type" : "String"},
+                        "Vendor ID"   : {"type" : "String"},
+                        "Address 1"   : {"type" : "String"},
+			"Address 2"   : {"type" : "String",
+					 "Has Missing" : true},
+			"City"        : {"type" : "String"},
+			"State"       : {"type" : "String"},
+			"Zip"         : {"type" : "String",
+					 "Has Missing" : true}},
+  "output_file": "output.csv",
+  "training_file": "contract_training.json"
+}
