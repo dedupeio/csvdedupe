@@ -32,6 +32,8 @@ python setup.py install
 
 ## csvdedupe usage
 
+Take a messy input file or STDIN pipe and identify duplicates
+
 Provide an input file and field names
 ```bash
 csvdedupe examples/csv_example_messy_input.csv \
@@ -106,6 +108,8 @@ Or
 
 
 ## csvlink usage
+
+Take two CSV files and find matches between them
 
 Provide an input file and field names
 ```bash
