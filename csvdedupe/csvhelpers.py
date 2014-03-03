@@ -58,10 +58,12 @@ def writeResults(clustered_dupes, input_file, output_file):
 
     logging.info('saving results to: %s' % output_file)
 
-    cluster_membership = collections.defaultdict(lambda : 'x')
+    cluster_membership = {}
     for cluster_id, cluster in enumerate(clustered_dupes):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
+
+    unique_record_id = cluster_id + 1
 
     writer = csv.writer(output_file)
 
@@ -71,9 +73,12 @@ def writeResults(clustered_dupes, input_file, output_file):
     heading_row.insert(0, 'Cluster ID')
     writer.writerow(heading_row)
 
-    for i, row in enumerate(reader):
-        row_id = i
-        cluster_id = cluster_membership[row_id]
+    for row_id, row in enumerate(reader):
+        if row_id in cluster_membership :
+            cluster_id = cluster_membership[row_id]
+        else :
+            cluster_id = unique_record_id
+            unique_record_id += 1
         row.insert(0, cluster_id)
         writer.writerow(row)
 
@@ -90,22 +95,28 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
 
+    unique_record_id = cluster_id + 1
+
     writer = csv.writer(output_file)
 
     reader = csv.reader(StringIO(input_file))
 
     heading_row = reader.next()
+    heading_row.insert(0, 'Cluster ID')
     writer.writerow(heading_row)
 
     seen_clusters = set()
-    for i, row in enumerate(reader):
-        row_id = i
+    for row_id, row in enumerate(reader):
         if row_id in cluster_membership: 
             cluster_id = cluster_membership[row_id]
-            if cluster_id not in seen_clusters:
+            if cluster_id not in seen_clusters :
+                row.insert(0, cluster_id)
                 writer.writerow(row)
                 seen_clusters.add(cluster_id)
-        else:
+        else :
+            cluster_id = unique_record_id
+            unique_record_id += 1
+            row.insert(0, cluster_id)
             writer.writerow(row)
 
 def writeLinkedResults(clustered_pairs, input_1, input_2, output_file, inner_join = False) :
