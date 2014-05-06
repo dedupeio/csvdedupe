@@ -160,14 +160,14 @@ class CSVLink :
       logging.info('starting active labeling...')
 
       dedupe.consoleLabel(deduper)
-      deduper.train()
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
       deduper.writeTraining(self.training_file)
     else:
       logging.info('skipping the training step')
-      deduper.train()
+
+    deduper.train()
 
     # ## Blocking
 
