@@ -1,7 +1,4 @@
 argparse
 simplejson
+dedupe
 
-# ====================
-# Dedupe
-# ====================
-git+git://github.com/open-city/dedupe.git#egg=dedupe
