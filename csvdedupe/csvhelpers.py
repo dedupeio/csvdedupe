@@ -42,7 +42,7 @@ def readData(input_file, field_names, prefix=None):
     for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
         if prefix :
-            row_id = (prefix, i)
+            row_id = "%s|%s" % (prefix, i)
         else :
             row_id = i
         data[row_id] = dedupe.core.frozendict(clean_row)
@@ -59,7 +59,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     logging.info('saving results to: %s' % output_file)
 
     cluster_membership = {}
-    for cluster_id, cluster in enumerate(clustered_dupes):
+    for cluster_id, (cluster, score) in enumerate(clustered_dupes):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
 
@@ -136,8 +136,7 @@ def writeLinkedResults(clustered_pairs, input_1, input_2, output_file, inner_joi
     row_header += row_header_2
 
     for pair in clustered_pairs :
-        index_1 = pair[0][1]
-        index_2 = pair[1][1]
+        index_1, index_2 = [int(index.split('|', 1)[1]) for index in pair[0]]
 
         matched_records.append(input_1[index_1] + input_2[index_2])
         seen_1.add(index_1)

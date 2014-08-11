@@ -101,8 +101,8 @@ class CSVLink :
     if 'field_definition' in configuration :
       self.field_definition = configuration['field_definition']
     else :
-      self.field_definition = dict((field, {'type' : 'String'}) 
-                                   for field in self.field_names_1)
+      self.field_definition = [{'field' : field, 'type' : 'String'} 
+                               for field in self.field_names_1]
       
 
   def main(self) :
@@ -138,7 +138,8 @@ class CSVLink :
     logging.info('imported %d rows from file 1', len(data_1))
     logging.info('imported %d rows from file 2', len(data_2))
 
-    logging.info('using fields: %s' % self.field_definition.keys())
+    logging.info('using fields: %s' % [field['field'] for 
+                                       field in self.field_definition])
     # # Create a new deduper object and pass our data model to it.
     deduper = dedupe.RecordLink(self.field_definition)
 
@@ -152,7 +153,8 @@ class CSVLink :
 
     if os.path.exists(self.training_file):
       logging.info('reading labeled examples from %s' % self.training_file)
-      deduper.readTraining(self.training_file)
+      with open(self.training_file) as tf :
+        deduper.readTraining(tf)
     elif self.skip_training:
       raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
@@ -163,7 +165,8 @@ class CSVLink :
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
-      deduper.writeTraining(self.training_file)
+      with open(self.training_file, 'w') as tf :
+        deduper.writeTraining(tf)
     else:
       logging.info('skipping the training step')
 

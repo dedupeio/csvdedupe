@@ -96,8 +96,8 @@ class CSVDedupe :
     if 'field_definition' in configuration :
       self.field_definition = configuration['field_definition']
     else :
-      self.field_definition = dict((field, {'type' : 'String'}) 
-                                   for field in self.field_names)
+      self.field_definition = [{'field' : field, 'type' : 'String'} 
+                               for field in self.field_names]
       
 
   def main(self) :
@@ -111,12 +111,13 @@ class CSVDedupe :
 
     # sanity check for provided field names in CSV file
     for field in self.field_definition :
-      if self.field_definition[field]['type'] != 'Interaction' :
-        if not field in data_d[0]:
+      if field['type'] != 'Interaction' :
+        if not field['field'] in data_d[0]:
         
           raise parser.error("Could not find field '" + field + "' in input")
 
-    logging.info('using fields: %s' % self.field_definition.keys())
+    logging.info('using fields: %s' % [field['field'] for 
+                                       field in self.field_definition])
     # # Create a new deduper object and pass our data model to it.
     deduper = dedupe.Dedupe(self.field_definition)
 
@@ -130,7 +131,8 @@ class CSVDedupe :
 
     if os.path.exists(self.training_file):
       logging.info('reading labeled examples from %s' % self.training_file)
-      deduper.readTraining(self.training_file)
+      with open(self.training_file) as tf :
+        deduper.readTraining(tf)
     elif self.skip_training:
       raise parser.error("You need to provide an existing training_file or run this script without --skip_training")
 
@@ -141,7 +143,8 @@ class CSVDedupe :
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
-      deduper.writeTraining(self.training_file)
+      with open(self.training_file, 'w') as tf :
+        deduper.writeTraining(tf)
     else:
       logging.info('skipping the training step')
       
