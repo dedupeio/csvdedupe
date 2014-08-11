@@ -20,7 +20,6 @@ If you are installing numpy for the first time,
 After numpy is set up, then install the following:
 * [fastcluster](http://math.stanford.edu/~muellner/fastcluster.html)
 * [hcluster](http://code.google.com/p/scipy-cluster/)
-* [networkx](http://networkx.github.com/)
 
 ```bash
 git clone git@github.com:datamade/csvdedupe.git
@@ -62,12 +61,12 @@ csvdedupe examples/csv_example_messy_input.csv \
 ```json
 {
   "field_names": ["Site name", "Address", "Zip", "Phone"],
-  "field_definition" : {"Site name" : {"type" : "String"},
-                        "Address"   : {"type" : "String"},
-                        "Zip"       : {"type" : "String",
-                                       "Has Missing" : true},
-                        "Phone"     : {"type" : "String",
-                                       "Has Missing" : true}},
+  "field_definition" : [{"field" : "Site name", "type" : "String"},
+                        {"field" : "Address", "type" : "String"},
+                        {"field" : "Zip", "type" : "String",
+                         "Has Missing" : true},
+                        {"field" : "Phone", "type" : "String",
+                         "Has Missing" : true}],
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
@@ -147,12 +146,12 @@ csvdedupe examples/restaurant-1.csv examples/restaurant-2.csv \
 {
   "field_names_1": ["name", "address", "city", "cuisine"],
   "field_names_2": ["restaurant", "street", "city", "type"],
-  "field_definition" : {"name":    {"type" : "String"},
-                        "address": {"type" : "String"},
-                        "city":    {"type" : "String",
-                                    "Has Missing" : true},
-                        "cuisine": {"type" : "String",
-                                    "Has Missing" : true}},
+  "field_definition" : [{"field" : "name", "type" : "String"},
+                        {"field" : "address", "type" : "String"},
+                        {"field" : "city", "type" : "String",
+                         "Has Missing" : true},
+                        {"field" : "cuisine", "type" : "String",
+                         "Has Missing" : true}},
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
