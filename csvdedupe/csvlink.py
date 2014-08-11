@@ -121,11 +121,11 @@ class CSVLink :
     # sanity check for provided field names in CSV file
     for field in self.field_names_1 :
       if field not in data_1.values()[0]:
-        raise parser.error("Could not find field '" + field + "' in input")
+        raise parser.error("Could not find field '" + field['field'] + "' in input")
 
     for field in self.field_names_2 :
       if field not in data_2.values()[0]:
-        raise parser.error("Could not find field '" + field + "' in input")
+        raise parser.error("Could not find field '" + field['field'] + "' in input")
 
 
     if self.field_names_1 != self.field_names_2 :

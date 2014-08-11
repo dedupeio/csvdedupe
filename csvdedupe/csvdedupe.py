@@ -114,7 +114,7 @@ class CSVDedupe :
       if field['type'] != 'Interaction' :
         if not field['field'] in data_d[0]:
         
-          raise parser.error("Could not find field '" + field + "' in input")
+          raise parser.error("Could not find field '" + field['field'] + "' in input")
 
     logging.info('using fields: %s' % [field['field'] for 
                                        field in self.field_definition])
