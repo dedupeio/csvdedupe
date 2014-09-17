@@ -139,7 +139,7 @@ class CSVDedupe :
     if not self.skip_training:
       logging.info('starting active labeling...')
 
-      dedupe.consoleLabel(deduper)
+      csvhelpers.consoleLabel(deduper)
 
       # When finished, save our training away to disk
       logging.info('saving training data to %s' % self.training_file)
