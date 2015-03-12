@@ -15,5 +15,5 @@ setup(
     },
     install_requires = [
         'argparse>=1.2.1',
-        'dedupe=0.7.3.2']
+        'dedupe==0.7.3.2']
 )
