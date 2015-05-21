@@ -23,7 +23,7 @@ parser.add_argument('input', nargs='?', default=sys.stdin,
 
 # optional arguments
 parser.add_argument('--config_file', type=str,
-                    help='Path to configuration file. Must provide either a config_file or input and filed_names.')
+                    help='Path to configuration file. Must provide either a config_file or input and field_names.')
 parser.add_argument('--field_names', type=str, nargs="+",
                     help='List of column names for dedupe to pay attention to')
 parser.add_argument('--output_file', type=str,
