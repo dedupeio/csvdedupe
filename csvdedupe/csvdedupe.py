@@ -4,7 +4,6 @@ import os
 import sys
 import logging
 from cStringIO import StringIO
-
 import csvhelpers
 import dedupe
 
@@ -74,8 +73,8 @@ class CSVDedupe(csvhelpers.CSVCommand) :
             if field['type'] != 'Interaction':
                 if not field['field'] in data_d[0]:
 
-                    raise parser.error("Could not find field '" +
-                                       field['field'] + "' in input")
+                    raise self.parser.error("Could not find field '" +
+                                            field['field'] + "' in input")
 
         logging.info('using fields: %s' % [field['field']
                                            for field in self.field_definition])
@@ -96,7 +95,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
             with open(self.training_file) as tf:
                 deduper.readTraining(tf)
         elif self.skip_training:
-            raise parser.error(
+            raise self.parser.error(
                 "You need to provide an existing training_file or run this script without --skip_training")
 
         if not self.skip_training:

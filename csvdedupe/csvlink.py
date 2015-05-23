@@ -19,21 +19,21 @@ class CSVLink(csvhelpers.CSVCommand):
             try:
                 self.input_1 = open(self.configuration['input'][0], 'rU').read()
             except IOError:
-                raise parser.error("Could not find the file %s" %
+                raise self.parser.error("Could not find the file %s" %
                                    (self.configuration['input'][0], ))
 
             try:
                 self.input_2 = open(self.configuration['input'][1], 'rU').read()
             except IOError:
-                raise parser.error("Could not find the file %s" %
+                raise self.parser.error("Could not find the file %s" %
                                    (self.configuration['input'][1], ))
 
         else:
-            raise parser.error("You must provide two input files.")
+            raise self.parser.error("You must provide two input files.")
 
         if 'field_names' in self.configuration:
             if 'field_names_1' in self.configuration or 'field_names_2' in self.configuration:
-                raise parser.error(
+                raise self.parser.error(
                     "You should only define field_names or individual dataset fields (field_names_1 and field_names_2")
             else:
                 self.field_names_1 = self.configuration['field_names']
@@ -42,7 +42,7 @@ class CSVLink(csvhelpers.CSVCommand):
             self.field_names_1 = self.configuration['field_names_1']
             self.field_names_2 = self.configuration['field_names_2']
         else:
-            raise parser.error(
+            raise self.parser.error(
                 "You must provide field_names of field_names_1 and field_names_2")
 
         self.inner_join = self.configuration.get('inner_join', False)
@@ -77,12 +77,12 @@ class CSVLink(csvhelpers.CSVCommand):
         # sanity check for provided field names in CSV file
         for field in self.field_names_1:
             if field not in data_1.values()[0]:
-                raise parser.error(
+                raise self.parser.error(
                     "Could not find field '" + field + "' in input")
 
         for field in self.field_names_2:
             if field not in data_2.values()[0]:
-                raise parser.error(
+                raise self.parser.error(
                     "Could not find field '" + field + "' in input")
 
         if self.field_names_1 != self.field_names_2:
@@ -115,7 +115,7 @@ class CSVLink(csvhelpers.CSVCommand):
             with open(self.training_file) as tf:
                 deduper.readTraining(tf)
         elif self.skip_training:
-            raise parser.error(
+            raise self.parser.error(
                 "You need to provide an existing training_file or run this script without --skip_training")
 
         if not self.skip_training:
