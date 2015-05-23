@@ -20,10 +20,18 @@ def preProcess(column):
     Regex. Things like casing, extra spaces, quotes and new lines can
     be ignored.
     """
-    column = AsciiDammit.asciiDammit(column)
-    column = re.sub('  +', ' ', column)
-    column = re.sub('\n', ' ', column)
-    column = column.strip().strip('"').strip("'").lower().strip()
+    if column.find('LatLong') == 0:
+        try:
+            vals = column[8:-1].split(',')
+            column = (float(vals[0]), float(vals[1]))
+        except ValueError:
+            column = (0.0,0.0)
+    else:
+        column = AsciiDammit.asciiDammit(column)
+        column = re.sub('  +', ' ', column)
+        column = re.sub('\n', ' ', column)
+        column = column.strip().strip('"').strip("'").lower().strip()
+
     return column
 
 
