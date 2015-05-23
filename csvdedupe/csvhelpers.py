@@ -6,10 +6,11 @@ import logging
 from cStringIO import StringIO
 import sys
 from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE,SIG_DFL) 
+signal(SIGPIPE, SIG_DFL)
 
 import AsciiDammit
 import dedupe
+
 
 def preProcess(column):
     """
@@ -41,9 +42,9 @@ def readData(input_file, field_names, prefix=None):
     reader = csv.DictReader(StringIO(input_file))
     for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
-        if prefix :
+        if prefix:
             row_id = "%s|%s" % (prefix, i)
-        else :
+        else:
             row_id = i
         data[row_id] = dedupe.core.frozendict(clean_row)
 
@@ -74,13 +75,14 @@ def writeResults(clustered_dupes, input_file, output_file):
     writer.writerow(heading_row)
 
     for row_id, row in enumerate(reader):
-        if row_id in cluster_membership :
+        if row_id in cluster_membership:
             cluster_id = cluster_membership[row_id]
-        else :
+        else:
             cluster_id = unique_record_id
             unique_record_id += 1
         row.insert(0, cluster_id)
         writer.writerow(row)
+
 
 # ## Writing results
 def writeUniqueResults(clustered_dupes, input_file, output_file):
@@ -107,19 +109,21 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
 
     seen_clusters = set()
     for row_id, row in enumerate(reader):
-        if row_id in cluster_membership: 
+        if row_id in cluster_membership:
             cluster_id = cluster_membership[row_id]
-            if cluster_id not in seen_clusters :
+            if cluster_id not in seen_clusters:
                 row.insert(0, cluster_id)
                 writer.writerow(row)
                 seen_clusters.add(cluster_id)
-        else :
+        else:
             cluster_id = unique_record_id
             unique_record_id += 1
             row.insert(0, cluster_id)
             writer.writerow(row)
 
-def writeLinkedResults(clustered_pairs, input_1, input_2, output_file, inner_join = False) :
+
+def writeLinkedResults(clustered_pairs, input_1, input_2, output_file,
+                       inner_join=False):
     logging.info('saving unique results to: %s' % output_file)
 
     matched_records = []
@@ -135,7 +139,7 @@ def writeLinkedResults(clustered_pairs, input_1, input_2, output_file, inner_joi
     length_2 = len(row_header_2)
     row_header += row_header_2
 
-    for pair in clustered_pairs :
+    for pair in clustered_pairs:
         index_1, index_2 = [int(index.split('|', 1)[1]) for index in pair[0]]
 
         matched_records.append(input_1[index_1] + input_2[index_2])
@@ -145,68 +149,15 @@ def writeLinkedResults(clustered_pairs, input_1, input_2, output_file, inner_joi
     writer = csv.writer(output_file)
     writer.writerow(row_header)
 
-    for matches in matched_records :
+    for matches in matched_records:
         writer.writerow(matches)
-   
-    if not inner_join :
 
-        for i, row in enumerate(input_1) :
-            if i not in seen_1 :
-                writer.writerow(row + [None]*length_2)
+    if not inner_join:
 
-        for i, row in enumerate(input_2) :
-            if i not in seen_2 :
-                writer.writerow([None]*length_1 + row)
+        for i, row in enumerate(input_1):
+            if i not in seen_1:
+                writer.writerow(row + [None] * length_2)
 
-
-def consoleLabel(deduper): # pragma : no cover
-    '''
-    Command line interface for presenting and labeling training pairs
-    by the user
-    
-    Argument :
-    A deduper object
-    '''
-
-    finished = False
-
-    while not finished :
-        uncertain_pairs = deduper.uncertainPairs()
-
-        labels = {'distinct' : [], 'match' : []}
-
-        for record_pair in uncertain_pairs:
-            label = ''
-            labeled = False
-
-            for pair in record_pair:
-                for field in set(each[0] for each
-                                 in deduper.data_model.field_comparators) :
-                    line = "%s : %s\n" % (field, pair[field])
-                    sys.stderr.write(line)
-                sys.stderr.write('\n')
-
-            sys.stderr.write('Do these records refer to the same thing?\n')
-
-            valid_response = False
-            while not valid_response:
-                sys.stderr.write('(y)es / (n)o / (u)nsure / (f)inished\n')
-                label = sys.stdin.readline().strip()
-                if label in ['y', 'n', 'u', 'f']:
-                    valid_response = True
-
-            if label == 'y' :
-                labels['match'].append(record_pair)
-                labeled = True
-            elif label == 'n' :
-                labels['distinct'].append(record_pair)
-                labeled = True
-            elif label == 'f':
-                sys.stderr.write('Finished labeling\n')
-                finished = True
-            elif label != 'u':
-                sys.stderr.write('Nonvalid response\n')
-                raise
-
-        if labeled :
-            deduper.markPairs(labels)
+        for i, row in enumerate(input_2):
+            if i not in seen_2:
+                writer.writerow([None] * length_1 + row)
