@@ -10,7 +10,8 @@ signal(SIGPIPE, SIG_DFL)
 
 import AsciiDammit
 import dedupe
-
+import json
+import argparse
 
 def preProcess(column):
     """
@@ -161,3 +162,63 @@ def writeLinkedResults(clustered_pairs, input_1, input_2, output_file,
         for i, row in enumerate(input_2):
             if i not in seen_2:
                 writer.writerow([None] * length_1 + row)
+
+class CSVCommand(object) :
+    def __init__(self) :
+        self.parser = argparse.ArgumentParser(
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+        self._common_args()
+        self.add_args()
+
+        self.args = self.parser.parse_args()
+
+        self.configuration = {}
+
+        if self.args.config_file:
+            #read from configuration file
+            try:
+                with open(self.args.config_file, 'r') as f:
+                    config = json.load(f)
+                    self.configuration.update(config)
+            except IOError:
+                raise self.parser.error(
+                    "Could not find config file %s. Did you name it correctly?"
+                    % self.args.config_file)
+
+        # override if provided from the command line
+        args_d = vars(self.args)
+        args_d = dict((k, v) for (k, v) in args_d.items() if v is not None)
+        self.configuration.update(args_d)
+
+        self.output_file = self.configuration.get('output_file', None)
+        self.skip_training = self.configuration.get('skip_training', False)
+        self.training_file = self.configuration.get('training_file',
+                                               'training.json')
+        self.sample_size = self.configuration.get('sample_size', 1500)
+        self.recall_weight = self.configuration.get('recall_weight', 2)
+
+        if 'field_definition' in self.configuration:
+            self.field_definition = self.configuration['field_definition']
+        else :
+            self.field_definition = None
+
+
+    def _common_args(self) :
+        # optional arguments
+        self.parser.add_argument('--config_file', type=str,
+            help='Path to configuration file. Must provide either a config_file or input and field_names.')
+        self.parser.add_argument('--field_names', type=str, nargs="+",
+            help='List of column names for dedupe to pay attention to')
+        self.parser.add_argument('--output_file', type=str,
+            help='CSV file to store deduplication results')
+        self.parser.add_argument('--skip_training', action='store_true',
+            help='Skip labeling examples by user and read training from training_file only')
+        self.parser.add_argument('--training_file', type=str, 
+            help='Path to a new or existing file consisting of labeled training examples')
+        self.parser.add_argument('--sample_size', type=int, 
+            help='Number of random sample pairs to train off of')
+        self.parser.add_argument('--recall_weight', type=int, 
+            help='Threshold that will maximize a weighted average of our precision and recall')
+        self.parser.add_argument('-v', '--verbose', action='count', default=0)
+
