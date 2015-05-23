@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = "csvdedupe",
-    version = '0.1.5',
+    version = '0.1.6',
     description="Command line tools for deduplicating and merging csv files",
     author="Forest Gregg, Derek Eder",
     license="MIT",
@@ -15,5 +15,5 @@ setup(
     },
     install_requires = [
         'argparse>=1.2.1',
-        'dedupe==0.7.3.2']
+        'dedupe']
 )

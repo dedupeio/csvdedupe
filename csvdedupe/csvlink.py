@@ -95,7 +95,7 @@ class CSVLink :
     self.output_file = configuration.get('output_file', None)
     self.skip_training = configuration.get('skip_training', False)
     self.training_file = configuration.get('training_file', 'training.json')
-    self.sample_size = configuration.get('sample_size', 150000)
+    self.sample_size = configuration.get('sample_size', 1500)
     self.recall_weight = configuration.get('recall_weight', 2)
     
     if 'field_definition' in configuration :

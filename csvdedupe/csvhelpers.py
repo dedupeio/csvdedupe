@@ -180,7 +180,7 @@ def consoleLabel(deduper): # pragma : no cover
             labeled = False
 
             for pair in record_pair:
-                for field in set(field for field, compare 
+                for field in set(each[0] for each
                                  in deduper.data_model.field_comparators) :
                     line = "%s : %s\n" % (field, pair[field])
                     sys.stderr.write(line)
