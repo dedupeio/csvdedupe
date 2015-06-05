@@ -8,7 +8,6 @@ notifications:
       on_failure : change
 python:
   - "2.7"
-  - "3.4"
 install:
   - pip install --use-mirrors -r requirements.txt 
   - pip install --use-mirrors -r requirements-test.txt
