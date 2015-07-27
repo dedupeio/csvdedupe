@@ -1,10 +1,10 @@
 #! /usr/bin/env python
-
+import future
 import os
 import sys
 import logging
-from cStringIO import StringIO
-import csvhelpers
+from io import StringIO
+from . import csvhelpers
 import dedupe
 
 import itertools
@@ -17,7 +17,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
         # set defaults
         try:
             # take in STDIN input or open the file
-            if isinstance(self.configuration['input'], file):
+            if hasattr(self.configuration['input'], 'read'):
                 if not sys.stdin.isatty():
                     self.input = self.configuration['input'].read()
                     # We need to get control of STDIN again.

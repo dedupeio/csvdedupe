@@ -14,6 +14,7 @@ setup(
         ]
     },
     install_requires = [
+        'future',
         'argparse>=1.2.1',
-        'dedupe']
+        'dedupe==0.8.0.1.7']
 )

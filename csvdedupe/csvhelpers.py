@@ -1,14 +1,16 @@
+import future
+from future.builtins import next
+
 import os
 import csv
 import re
 import collections
 import logging
-from cStringIO import StringIO
+from io import StringIO
 import sys
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 
-import AsciiDammit
 import dedupe
 import json
 import argparse
@@ -20,7 +22,6 @@ def preProcess(column):
     Regex. Things like casing, extra spaces, quotes and new lines can
     be ignored.
     """
-    column = AsciiDammit.asciiDammit(column)
     column = re.sub('  +', ' ', column)
     column = re.sub('\n', ' ', column)
     column = column.strip().strip('"').strip("'").lower().strip()
@@ -71,7 +72,7 @@ def writeResults(clustered_dupes, input_file, output_file):
 
     reader = csv.reader(StringIO(input_file))
 
-    heading_row = reader.next()
+    heading_row = next(reader)
     heading_row.insert(0, 'Cluster ID')
     writer.writerow(heading_row)
 
@@ -104,7 +105,7 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
 
     reader = csv.reader(StringIO(input_file))
 
-    heading_row = reader.next()
+    heading_row = next(reader)
     heading_row.insert(0, 'Cluster ID')
     writer.writerow(heading_row)
 
@@ -196,7 +197,7 @@ class CSVCommand(object) :
         self.training_file = self.configuration.get('training_file',
                                                'training.json')
         self.sample_size = self.configuration.get('sample_size', 1500)
-        self.recall_weight = self.configuration.get('recall_weight', 2)
+        self.recall_weight = self.configuration.get('recall_weight', 1)
 
         if 'field_definition' in self.configuration:
             self.field_definition = self.configuration['field_definition']

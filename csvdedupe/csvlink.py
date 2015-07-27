@@ -1,12 +1,13 @@
 #! /usr/bin/env python
+import future
 
 import logging
 import os
 import sys
 import json
-from cStringIO import StringIO
+from io import StringIO
 
-import csvhelpers
+from . import csvhelpers
 import dedupe
 
 import itertools
@@ -76,12 +77,12 @@ class CSVLink(csvhelpers.CSVCommand):
 
         # sanity check for provided field names in CSV file
         for field in self.field_names_1:
-            if field not in data_1.values()[0]:
+            if field not in list(data_1.values())[0]:
                 raise self.parser.error(
                     "Could not find field '" + field + "' in input")
 
         for field in self.field_names_2:
-            if field not in data_2.values()[0]:
+            if field not in list(data_2.values())[0]:
                 raise self.parser.error(
                     "Could not find field '" + field + "' in input")
 
