@@ -126,8 +126,12 @@ class CSVLink(csvhelpers.CSVCommand):
 
             # When finished, save our training away to disk
             logging.info('saving training data to %s' % self.training_file)
-            with open(self.training_file, 'wb') as tf:
-                deduper.writeTraining(tf)
+            if sys.version < '3' :
+                with open(self.training_file, 'wb') as tf:
+                    deduper.writeTraining(tf)
+            else :
+                with open(self.training_file, 'w') as tf:
+                    deduper.writeTraining(tf)
         else:
             logging.info('skipping the training step')
 
@@ -163,9 +167,14 @@ class CSVLink(csvhelpers.CSVCommand):
         # write out our results
 
         if self.output_file:
-            with open(self.output_file, 'wb') as output_file:
-                write_function(clustered_dupes, self.input_1, self.input_2,
-                               output_file, self.inner_join)
+            if sys.version < '3' :
+                with open(self.output_file, 'wb') as output_file:
+                    write_function(clustered_dupes, self.input_1, self.input_2,
+                                   output_file, self.inner_join)
+            else :
+                with open(self.output_file, 'w') as output_file:
+                    write_function(clustered_dupes, self.input_1, self.input_2,
+                                   output_file, self.inner_join)
         else:
             write_function(clustered_dupes, self.input_1, self.input_2,
                            sys.stdout, self.inner_join)
