@@ -18,7 +18,6 @@ else :
 import dedupe
 import json
 import argparse
-import chardet
 
 def preProcess(column):
     """
