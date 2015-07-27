@@ -29,7 +29,10 @@ class TestCSVLink(unittest.TestCase) :
 
     def test_no_parameters(self):
       child = pexpect.spawn('csvlink')
-      child.expect('error: too few arguments')
+      if sys.version < '3' :
+          child.expect('error: too few arguments')
+      else :
+          child.expect('error: the following arguments are required: input')
 
     def test_one_argument(self):
       child = pexpect.spawn('csvlink examples/restaurant-1.csv')
