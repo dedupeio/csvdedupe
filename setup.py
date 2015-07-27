@@ -2,7 +2,6 @@ from setuptools import setup
 import sys
 
 requirements = ['future',
-                'argparse>=1.2.1',
                 'dedupe==0.8.0.1.7']
 
 if sys.version < '3':
