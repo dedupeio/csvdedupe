@@ -1,4 +1,12 @@
 from setuptools import setup
+import sys
+
+requirements = ['future',
+                'argparse>=1.2.1',
+                'dedupe==0.8.0.1.7']
+
+if sys.version < '3':
+    requirements += ['unicodecsv']
 
 setup(
     name = "csvdedupe",
@@ -13,8 +21,5 @@ setup(
             'csvlink = csvdedupe.csvlink:launch_new_instance'
         ]
     },
-    install_requires = [
-        'future',
-        'argparse>=1.2.1',
-        'dedupe==0.8.0.1.7']
+    install_requires = requirements
 )

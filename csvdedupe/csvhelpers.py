@@ -2,18 +2,23 @@ import future
 from future.builtins import next
 
 import os
-import csv
 import re
 import collections
 import logging
-from io import StringIO
+from io import StringIO, open
 import sys
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
+if sys.version < '3' :
+    import unicodecsv as csv
+else :
+    import csv
+
 
 import dedupe
 import json
 import argparse
+import chardet
 
 def preProcess(column):
     """
@@ -41,11 +46,12 @@ def readData(input_file, field_names, prefix=None):
     """
 
     data = {}
+    
     reader = csv.DictReader(StringIO(input_file))
     for i, row in enumerate(reader):
         clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
         if prefix:
-            row_id = "%s|%s" % (prefix, i)
+            row_id = u"%s|%s" % (prefix, i)
         else:
             row_id = i
         data[row_id] = dedupe.core.frozendict(clean_row)
@@ -73,7 +79,7 @@ def writeResults(clustered_dupes, input_file, output_file):
     reader = csv.reader(StringIO(input_file))
 
     heading_row = next(reader)
-    heading_row.insert(0, 'Cluster ID')
+    heading_row.insert(0, u'Cluster ID')
     writer.writerow(heading_row)
 
     for row_id, row in enumerate(reader):
@@ -106,7 +112,7 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
     reader = csv.reader(StringIO(input_file))
 
     heading_row = next(reader)
-    heading_row.insert(0, 'Cluster ID')
+    heading_row.insert(0, u'Cluster ID')
     writer.writerow(heading_row)
 
     seen_clusters = set()

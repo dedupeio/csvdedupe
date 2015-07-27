@@ -3,7 +3,7 @@ import future
 import os
 import sys
 import logging
-from io import StringIO
+from io import StringIO, open
 from . import csvhelpers
 import dedupe
 
@@ -105,7 +105,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
 
             # When finished, save our training away to disk
             logging.info('saving training data to %s' % self.training_file)
-            with open(self.training_file, 'w') as tf:
+            with open(self.training_file, 'wb') as tf:
                 deduper.writeTraining(tf)
         else:
             logging.info('skipping the training step')
@@ -143,7 +143,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
             write_function = csvhelpers.writeUniqueResults
 
         if self.output_file:
-            with open(self.output_file, 'w') as output_file:
+            with open(self.output_file, 'wb') as output_file:
                 write_function(clustered_dupes, self.input, output_file)
         else:
             write_function(clustered_dupes, self.input, sys.stdout)
