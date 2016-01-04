@@ -2,7 +2,7 @@ from setuptools import setup
 import sys
 
 requirements = ['future',
-                'dedupe==0.8.0.1.7']
+                'dedupe>=0.8.0.1.7']
 
 if sys.version < '3':
     requirements += ['unicodecsv']
