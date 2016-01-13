@@ -29,6 +29,8 @@ def preProcess(column):
     column = re.sub('  +', ' ', column)
     column = re.sub('\n', ' ', column)
     column = column.strip().strip('"').strip("'").lower().strip()
+    if column == '' :
+        column = None
     return column
 
 
@@ -177,7 +179,8 @@ class CSVCommand(object) :
         self._common_args()
         self.add_args()
 
-        self.args = self.parser.parse_args()
+        self.args = self.parser.parse_known_args()[0]
+        print(self.args)
 
         self.configuration = {}
 
