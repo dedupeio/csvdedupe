@@ -6,7 +6,7 @@ Command line tools for using the [dedupe python library](https://github.com/open
 
 `csvlink` take two CSV files and find matches between them
 
-[Read more about csvdedupe on OpenNews Source](http://source.mozillaopennews.org/en-US/articles/introducing-cvsdedupe/)
+[Read more about csvdedupe on OpenNews Source](http://source.opennews.org/en-US/articles/introducing-cvsdedupe/)
 
 
 [![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
