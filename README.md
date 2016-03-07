@@ -139,7 +139,7 @@ csvdedupe examples/restaurant-1.csv examples/restaurant-2.csv \
                         {"field" : "city", "type" : "String",
                          "Has Missing" : true},
                         {"field" : "cuisine", "type" : "String",
-                         "Has Missing" : true},
+                         "Has Missing" : true}],
   "output_file": "examples/output.csv",
   "skip_training": false,
   "training_file": "training.json",
