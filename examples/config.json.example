@@ -1,6 +1,6 @@
 {
   "field_names": ["Site name","Address","Zip","Phone"],
-  "field_definition" : {"Site name" : {"type" : "String"},
+  "field_definitions" : {"Site name" : {"type" : "String"},
                         "Address"   : {"type" : "String"},
                         "Zip"       : {"type" : "String",
 				       "Has Missing" : true},
