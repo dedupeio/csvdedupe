@@ -67,7 +67,7 @@ Example config file
 
     {
       "field_names": ["Site name", "Address", "Zip", "Phone"],
-      "field_definition" : {"Site name" : {"type" : "String"},
+      "field_definitions" : {"Site name" : {"type" : "String"},
                             "Address"   : {"type" : "String"},
                             "Zip"       : {"type" : "String",
                                            "Has Missing" : true},
@@ -136,7 +136,7 @@ Example config file
     {
       "field_names_1": ["name", "address", "city", "cuisine"],
       "field_names_2": ["restaurant", "street", "city", "type"],
-      "field_definition" : {"name":    {"type" : "String"},
+      "field_definitions" : {"name":    {"type" : "String"},
                             "address": {"type" : "String"},
                             "city":    {"type" : "String",
                                         "Has Missing" : true},
