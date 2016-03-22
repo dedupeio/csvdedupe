@@ -5,7 +5,7 @@ requirements = ['future',
                 'dedupe>=1.2.3']
 
 if sys.version < '3':
-    requirements += ['unicodecsv']
+    requirements += ['backports.csv']
 
 setup(
     name = "csvdedupe",

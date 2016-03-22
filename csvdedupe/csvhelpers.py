@@ -10,7 +10,7 @@ import sys
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE, SIG_DFL)
 if sys.version < '3' :
-    import unicodecsv as csv
+    from backports import csv
 else :
     import csv
 
@@ -180,7 +180,6 @@ class CSVCommand(object) :
         self.add_args()
 
         self.args = self.parser.parse_known_args()[0]
-        print(self.args)
 
         self.configuration = {}
 

@@ -30,7 +30,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
                     raise self.parser.error("No input file or STDIN specified.")
             else:
                 try:
-                    self.input = open(self.configuration['input'], 'rU').read()
+                    self.input = open(self.configuration['input'], encoding='utf-8').read()
                 except IOError:
                     raise self.parser.error("Could not find the file %s" %
                                             (self.configuration['input'], ))
