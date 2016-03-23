@@ -1,7 +1,9 @@
 #! /usr/bin/env python
 import future
 import os
+import codecs
 import sys
+import locale
 import logging
 from io import StringIO, open
 from . import csvhelpers
@@ -147,14 +149,14 @@ class CSVDedupe(csvhelpers.CSVCommand) :
             write_function = csvhelpers.writeUniqueResults
 
         if self.output_file:
-            if sys.version < '3' :
-                with open(self.output_file, 'wb') as output_file:
-                    write_function(clustered_dupes, self.input, output_file)
-            else :
-                with open(self.output_file, 'w') as output_file:
-                    write_function(clustered_dupes, self.input, output_file)
+            with open(self.output_file, 'w', encoding='utf-8') as output_file:
+                write_function(clustered_dupes, self.input, output_file)
         else:
-            write_function(clustered_dupes, self.input, sys.stdout)
+            if sys.version < '3' :
+                out = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+                write_function(clustered_dupes, self.input, out)
+            else :
+                write_function(clustered_dupes, self.input, sys.stdout)
 
 
 def launch_new_instance():
