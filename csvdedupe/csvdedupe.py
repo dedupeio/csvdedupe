@@ -87,8 +87,8 @@ class CSVDedupe(csvhelpers.CSVCommand) :
         if self.skip_training and os.path.exists(self.settings_file):
 
             # Load our deduper from the last training session cache.
-            logging.info('reading from previous training cache ', 
-                                                            self.settings_file)
+            logging.info('reading from previous training cache %s' 
+                                                          % self.settings_file)
             with open(self.settings_file, 'rb') as f:
                 deduper = dedupe.StaticDedupe(f)
         else:
