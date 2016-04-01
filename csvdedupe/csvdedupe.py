@@ -80,43 +80,60 @@ class CSVDedupe(csvhelpers.CSVCommand) :
 
         logging.info('using fields: %s' % [field['field']
                                            for field in self.field_definition])
-        # # Create a new deduper object and pass our data model to it.
-        deduper = dedupe.Dedupe(self.field_definition)
 
-        # Set up our data sample
-        logging.info('taking a sample of %d possible pairs', self.sample_size)
-        deduper.sample(data_d, self.sample_size)
+        # If --skip_training has been selected, and we have a settings cache still
+        # persisting from the last run, use it in this next run.
+        # __Note:__ if you want to add more training data, don't use skip training
+        if self.skip_training and os.path.exists(self.settings_file):
 
-        # If we have training data saved from a previous run of dedupe,
-        # look for it an load it in.
-        # __Note:__ if you want to train from scratch, delete the training_file
-
-        if os.path.exists(self.training_file):
-            logging.info('reading labeled examples from %s' %
-                         self.training_file)
-            with open(self.training_file) as tf:
-                deduper.readTraining(tf)
-        elif self.skip_training:
-            raise self.parser.error(
-                "You need to provide an existing training_file or run this script without --skip_training")
-
-        if not self.skip_training:
-            logging.info('starting active labeling...')
-
-            dedupe.consoleLabel(deduper)
-
-            # When finished, save our training away to disk
-            logging.info('saving training data to %s' % self.training_file)
-            if sys.version < '3' :
-                with open(self.training_file, 'wb') as tf:
-                    deduper.writeTraining(tf)
-            else :
-                with open(self.training_file, 'w') as tf:
-                    deduper.writeTraining(tf)
+            # Load our deduper from the last training session cache.
+            logging.info('reading from previous training cache ', 
+                                                            self.settings_file)
+            with open(self.settings_file, 'rb') as f:
+                deduper = dedupe.StaticDedupe(f)
         else:
-            logging.info('skipping the training step')
+            # # Create a new deduper object and pass our data model to it.
+            deduper = dedupe.Dedupe(self.field_definition)
 
-        deduper.train()
+            # Set up our data sample
+            logging.info('taking a sample of %d possible pairs', self.sample_size)
+            deduper.sample(data_d, self.sample_size)
+
+            # If we have training data saved from a previous run of dedupe,
+            # look for it an load it in.
+            # __Note:__ if you want to train from scratch, delete the training_file
+
+            if os.path.exists(self.training_file):
+                logging.info('reading labeled examples from %s' %
+                             self.training_file)
+                with open(self.training_file) as tf:
+                    deduper.readTraining(tf)
+            elif self.skip_training:
+                raise self.parser.error(
+                    "You need to provide an existing training_file or run this script without --skip_training")
+
+            if not self.skip_training:
+                logging.info('starting active labeling...')
+
+                dedupe.consoleLabel(deduper)
+
+                # When finished, save our training away to disk
+                logging.info('saving training data to %s' % self.training_file)
+                if sys.version < '3' :
+                    with open(self.training_file, 'wb') as tf:
+                        deduper.writeTraining(tf)
+                else :
+                    with open(self.training_file, 'w') as tf:
+                        deduper.writeTraining(tf)
+            else:
+                logging.info('skipping the training step')
+
+            deduper.train()
+
+            # After training settings have been established make a cache file for reuse
+            logging.info('caching training result set to file %s' % self.settings_file)
+            with open(self.settings_file, 'wb') as sf:
+                deduper.writeSettings(sf)
 
         # ## Blocking
 
