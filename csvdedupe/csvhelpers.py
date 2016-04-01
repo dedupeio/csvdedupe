@@ -203,6 +203,8 @@ class CSVCommand(object) :
         self.skip_training = self.configuration.get('skip_training', False)
         self.training_file = self.configuration.get('training_file',
                                                'training.json')
+        self.settings_file = self.configuration.get('settings_file',
+                                               'learned_settings')
         self.sample_size = self.configuration.get('sample_size', 1500)
         self.recall_weight = self.configuration.get('recall_weight', 1)
 
@@ -221,9 +223,11 @@ class CSVCommand(object) :
         self.parser.add_argument('--output_file', type=str,
             help='CSV file to store deduplication results')
         self.parser.add_argument('--skip_training', action='store_true',
-            help='Skip labeling examples by user and read training from training_file only')
+            help='Skip labeling examples by user and read training from training_files only')
         self.parser.add_argument('--training_file', type=str, 
             help='Path to a new or existing file consisting of labeled training examples')
+        self.parser.add_argument('--settings_file', type=str, 
+            help='Path to a new or existing file consisting of learned training settings')
         self.parser.add_argument('--sample_size', type=int, 
             help='Number of random sample pairs to train off of')
         self.parser.add_argument('--recall_weight', type=int, 
