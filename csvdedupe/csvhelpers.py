@@ -203,6 +203,8 @@ class CSVCommand(object) :
         self.skip_training = self.configuration.get('skip_training', False)
         self.training_file = self.configuration.get('training_file',
                                                'training.json')
+        self.settings_file = self.configuration.get('settings_file',
+                                               'learned_settings')
         self.sample_size = self.configuration.get('sample_size', 1500)
         self.recall_weight = self.configuration.get('recall_weight', 1)
 
@@ -221,12 +223,51 @@ class CSVCommand(object) :
         self.parser.add_argument('--output_file', type=str,
             help='CSV file to store deduplication results')
         self.parser.add_argument('--skip_training', action='store_true',
-            help='Skip labeling examples by user and read training from training_file only')
+            help='Skip labeling examples by user and read training from training_files only')
         self.parser.add_argument('--training_file', type=str, 
             help='Path to a new or existing file consisting of labeled training examples')
+        self.parser.add_argument('--settings_file', type=str,
+            help='Path to a new or existing file consisting of learned training settings')
         self.parser.add_argument('--sample_size', type=int, 
             help='Number of random sample pairs to train off of')
         self.parser.add_argument('--recall_weight', type=int, 
             help='Threshold that will maximize a weighted average of our precision and recall')
         self.parser.add_argument('-v', '--verbose', action='count', default=0)
 
+
+    # If we have training data saved from a previous run of dedupe,
+    # look for it an load it in.
+    def dedupe_training(self, deduper) :
+
+        # __Note:__ if you want to train from scratch, delete the training_file
+        if os.path.exists(self.training_file):
+            logging.info('reading labeled examples from %s' %
+                         self.training_file)
+            with open(self.training_file) as tf:
+                deduper.readTraining(tf)
+        elif self.skip_training:
+            raise self.parser.error(
+                "You need to provide an existing training_file or run this script without --skip_training")
+
+        if not self.skip_training:
+            logging.info('starting active labeling...')
+
+            dedupe.consoleLabel(deduper)
+
+            # When finished, save our training away to disk
+            logging.info('saving training data to %s' % self.training_file)
+            if sys.version < '3' :
+                with open(self.training_file, 'wb') as tf:
+                    deduper.writeTraining(tf)
+            else :
+                with open(self.training_file, 'w') as tf:
+                    deduper.writeTraining(tf)
+        else:
+            logging.info('skipping the training step')
+
+        deduper.train()
+
+        # After training settings have been established make a cache file for reuse
+        logging.info('caching training result set to file %s' % self.settings_file)
+        with open(self.settings_file, 'wb') as sf:
+            deduper.writeSettings(sf)
