@@ -37,9 +37,8 @@ def preProcess(column):
 def readData(input_file, field_names, prefix=None):
     """
     Read in our data from a CSV file and create a dictionary of records, 
-    where the key is a unique record ID and each value is a 
-    [frozendict](http://code.activestate.com/recipes/414283-frozen-dictionaries/) 
-    (hashable dictionary) of the row fields.
+    where the key is a unique record ID and each value is a dict 
+    of the row fields.
 
     **Currently, dedupe depends upon records' unique ids being integers
     with no integers skipped. The smallest valued unique id must be 0 or
@@ -50,12 +49,12 @@ def readData(input_file, field_names, prefix=None):
     
     reader = csv.DictReader(StringIO(input_file))
     for i, row in enumerate(reader):
-        clean_row = [(k, preProcess(v)) for (k, v) in row.items()]
+        clean_row = {k: preProcess(v) for (k, v) in row.items()}
         if prefix:
             row_id = u"%s|%s" % (prefix, i)
         else:
             row_id = i
-        data[row_id] = dedupe.core.frozendict(clean_row)
+        data[row_id] = clean_row
 
     return data
 
