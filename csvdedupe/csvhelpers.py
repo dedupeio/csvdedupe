@@ -101,7 +101,7 @@ def writeUniqueResults(clustered_dupes, input_file, output_file):
     logging.info('saving unique results to: %s' % output_file)
 
     cluster_membership = {}
-    for (cluster_id, cluster) in enumerate(clustered_dupes):
+    for cluster_id, (cluster, score) in enumerate(clustered_dupes):
         for record_id in cluster:
             cluster_membership[record_id] = cluster_id
 
