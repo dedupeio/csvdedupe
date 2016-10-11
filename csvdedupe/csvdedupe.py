@@ -143,7 +143,6 @@ class CSVDedupe(csvhelpers.CSVCommand) :
             expanded_clustered_dupes.append((new_cluster, new_scores))
 
         clustered_dupes = expanded_clustered_dupes
-        print(parents, file=sys.stderr)
 
         logging.info('# duplicate sets %s' % len(clustered_dupes))
 
