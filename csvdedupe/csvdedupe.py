@@ -91,13 +91,20 @@ class CSVDedupe(csvhelpers.CSVCommand) :
                                                           % self.settings_file)
             with open(self.settings_file, 'rb') as f:
                 deduper = dedupe.StaticDedupe(f)
+
+            fields = {variable.field for variable in deduper.data_model.primary_fields}
+            unique_d, parents = exact_matches(data_d, fields)
+                
         else:
             # # Create a new deduper object and pass our data model to it.
             deduper = dedupe.Dedupe(self.field_definition)
 
+            fields = {variable.field for variable in deduper.data_model.primary_fields}
+            unique_d, parents = exact_matches(data_d, fields)
+
             # Set up our data sample
             logging.info('taking a sample of %d possible pairs', self.sample_size)
-            deduper.sample(data_d, self.sample_size)
+            deduper.sample(unique_d, self.sample_size)
 
             # Perform standard training procedures
             self.dedupe_training(deduper)
@@ -117,13 +124,26 @@ class CSVDedupe(csvhelpers.CSVCommand) :
 
         logging.info('finding a good threshold with a recall_weight of %s' %
                      self.recall_weight)
-        threshold = deduper.threshold(data_d, recall_weight=self.recall_weight)
+        threshold = deduper.threshold(unique_d, recall_weight=self.recall_weight)
 
         # `duplicateClusters` will return sets of record IDs that dedupe
         # believes are all referring to the same entity.
 
         logging.info('clustering...')
-        clustered_dupes = deduper.match(data_d, threshold)
+        clustered_dupes = deduper.match(unique_d, threshold)
+
+        expanded_clustered_dupes = []
+        for cluster, scores in clustered_dupes:
+            new_cluster = list(cluster)
+            new_scores = list(scores)
+            for row_id, score in zip(cluster, scores):
+                children = parents.get(row_id, [])
+                new_cluster.extend(children)
+                new_scores.extend([score] * len(children))
+            expanded_clustered_dupes.append((new_cluster, new_scores))
+
+        clustered_dupes = expanded_clustered_dupes
+        print(parents, file=sys.stderr)
 
         logging.info('# duplicate sets %s' % len(clustered_dupes))
 
@@ -141,6 +161,19 @@ class CSVDedupe(csvhelpers.CSVCommand) :
                 write_function(clustered_dupes, self.input, out)
             else :
                 write_function(clustered_dupes, self.input, sys.stdout)
+
+def exact_matches(data_d, match_fields):
+    unique = {}
+    redundant = {}
+    for key, record in data_d.items():
+        record_hash = hash(tuple(record[f] for f in match_fields))
+        if record_hash not in redundant:
+            unique[key] = record
+            redundant[record_hash] = (key, [])
+        else:
+            redundant[record_hash][1].append(key)
+
+    return unique, {k : v for k, v in redundant.values()}
 
 
 def launch_new_instance():

@@ -110,13 +110,26 @@ class CSVLink(csvhelpers.CSVCommand):
                                                           % self.settings_file)
             with open(self.settings_file, 'rb') as f:
                 deduper = dedupe.StaticRecordLink(f)
+                
+
+            fields = {variable.field for variable in deduper.data_model.primary_fields}
+            (nonexact_1,
+             nonexact_2,
+             exact_pairs) = exact_matches(data_1, data_2, fields)
+            
+            
         else:
             # # Create a new deduper object and pass our data model to it.
             deduper = dedupe.RecordLink(self.field_definition)
 
+            fields = {variable.field for variable in deduper.data_model.primary_fields}
+            (nonexact_1,
+             nonexact_2,
+             exact_pairs) = exact_matches(data_1, data_2, fields)
+
             # Set up our data sample
             logging.info('taking a sample of %d possible pairs', self.sample_size)
-            deduper.sample(data_1, data_2, self.sample_size)
+            deduper.sample(nonexact_1, nonexact_2, self.sample_size)
 
             # Perform standard training procedures
             self.dedupe_training(deduper)
@@ -145,6 +158,8 @@ class CSVLink(csvhelpers.CSVCommand):
         logging.info('clustering...')
         clustered_dupes = deduper.match(data_1, data_2, threshold)
 
+        clustered_dupes.extend(exact_pairs)
+
         logging.info('# duplicate sets %s' % len(clustered_dupes))
 
         write_function = csvhelpers.writeLinkedResults
@@ -163,6 +178,30 @@ class CSVLink(csvhelpers.CSVCommand):
             write_function(clustered_dupes, self.input_1, self.input_2,
                            sys.stdout, self.inner_join)
 
+
+def exact_matches(data_1, data_2, match_fields):
+    nonexact_1 = {}
+    nonexact_2 = {}
+    exact_pairs = []
+    redundant = {}
+
+    for key, record in data_1.items():
+        record_hash = hash(tuple(record[f] for f in match_fields))
+        redundant[record_hash] = key        
+
+    for key_2, record in data_2.items():
+        record_hash = hash(tuple(record[f] for f in match_fields))
+        if record_hash in redundant:
+            key_1 = redundant[record_hash]
+            exact_pairs.append(((key_1, key_2), 1.0))
+            del redundant[record_hash]
+        else:
+            nonexact_2[key_2] = record
+
+    for key_1 in redundant.values():
+        nonexact_1[key_1] = data_1[key_1]
+        
+    return nonexact_1, nonexact_2, exact_pairs
 
 def launch_new_instance():
     d = CSVLink()
