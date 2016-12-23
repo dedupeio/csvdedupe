@@ -29,7 +29,7 @@ pip install csvdedupe
 ## Getting Started
 
 ### csvdedupe
----
+
 `csvdedupe` takes a messy input file or STDIN pipe and identifies duplicates. To get started, pick one of three deduping strategies: call `csvdedupe` with arguments, pipe your file using UNIX, or define a config file.
 
 Provide an input file, field names, and output file:
@@ -103,8 +103,8 @@ Or
   * `-h`, `--help`            show help message and exit
 
 
-### csvlink
 ---
+### csvlink
 `csvdedupe` takes two CSV files and finds matches between them.
 
 Provide an input file, field names, and output file:
