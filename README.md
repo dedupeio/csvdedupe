@@ -1,10 +1,12 @@
 # csvdedupe
 
 Command line tools for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
- 
-`csvdedupe` take a messy input file or STDIN pipe and identify duplicates
 
-`csvlink` take two CSV files and find matches between them
+Two easy commands:
+
+`csvdedupe` - takes a messy input file or STDIN pipe and identifies duplicates.
+
+`csvlink` - takes two CSV files and finds matches between them.
 
 [Read more about csvdedupe on OpenNews Source](http://source.opennews.org/en-US/articles/introducing-cvsdedupe/)
 
@@ -13,15 +15,24 @@ Command line tools for using the [dedupe python library](https://github.com/open
 
 ## Installation and dependencies
 
+We recommend using [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/install.html) for working in a virtualized development environment. [Read how to set up virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/).
+
+Once you have virtualenvwrapper set up,
+
 ```bash
+mkvirtualenv csvdedupe
+git clone git@github.com:datamade/csvdedupe.git
+cd csvdedupe
 pip install csvdedupe
 ```
 
-## csvdedupe usage
+## Getting Started
 
-Take a messy input file or STDIN pipe and identify duplicates
+### csvdedupe
 
-Provide an input file and field names
+`csvdedupe` takes a messy input file or STDIN pipe and identifies duplicates. To get started, pick one of three deduping strategies: call `csvdedupe` with arguments, pipe your file using UNIX, or define a config file.
+
+Provide an input file, field names, and output file:
 ```bash
 csvdedupe examples/csv_example_messy_input.csv \
           --field_names "Site name" Address Zip Phone \
@@ -30,7 +41,7 @@ csvdedupe examples/csv_example_messy_input.csv \
 
 __or__
 
-Pipe it, UNIX style
+Pipe it, UNIX style:
 ```bash
 cat examples/csv_example_messy_input.csv | csvdedupe --skip_training \
           --field_names "Site name" Address Zip Phone > output.csv
@@ -38,13 +49,13 @@ cat examples/csv_example_messy_input.csv | csvdedupe --skip_training \
 
 __or__
 
-Define everything in a config file
+Define everything in a config file:
 ```bash
 csvdedupe examples/csv_example_messy_input.csv \
             --config_file=config.json
 ```
 
-### Example config file
+*Your config file may look like this:*
 
 ```json
 {
@@ -63,9 +74,7 @@ csvdedupe examples/csv_example_messy_input.csv \
 }
 ```
 
-### Arguments:
-
-#### Required
+#### To us `csvdedupe` you absolutely need:
 
   * `input` a CSV file name or piped CSV file to deduplicate
 
@@ -75,7 +84,7 @@ Either
 Or
   * `--field_names` List of column names for dedupe to pay attention to
 
-#### Optional
+#### You may also need:
   * `--output_file OUTPUT_FILE`
                         CSV file to store deduplication results (default:
                         None)
@@ -94,18 +103,20 @@ Or
   * `-h`, `--help`            show help message and exit
 
 
-## csvlink usage
+### csvlink
 
-Take two CSV files and find matches between them
+`csvdedupe` takes two CSV files and finds matches between them.
 
-Provide an input file and field names
+Provide an input file, field names, and output file:
 ```bash
 csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
             --field_names name address city cuisine \
             --output_file output.csv
 ```
 
-Line up different field names from each file
+__or__
+
+Line up different field names from each file:
 ```bash
 csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
             --field_names_1 name address city cuisine \
@@ -113,7 +124,9 @@ csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
             --output_file output.csv
 ```
 
-Pipe the output to STDOUT
+__or__
+
+Pipe the output to STDOUT:
 ```bash
 csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
             --field_names name address city cuisine \
@@ -122,13 +135,13 @@ csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
 
 __or__
 
-Define everything in a config file
+Define everything in a config file:
 ```bash
-csvdedupe examples/restaurant-1.csv examples/restaurant-2.csv \
+csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
               --config_file=config.json
 ```
 
-### Example config file
+*Your config file may look like this:*
 
 ```json
 {
@@ -148,9 +161,7 @@ csvdedupe examples/restaurant-1.csv examples/restaurant-2.csv \
 }
 ```
 
-### Arguments:
-
-#### Required
+#### To us `csvlink` you absolutely need:
 
   * `input` two CSV file names to join together
 
@@ -161,7 +172,8 @@ Or
   * `--field_names_1` List of column names in first file for dedupe to pay attention to
   * `--field_names_2` List of column names in second file for dedupe to pay attention to
 
-#### Optional
+#### You may also need:
+
   * `--output_file OUTPUT_FILE`
                         CSV file to store deduplication results (default:
                         None)
@@ -178,10 +190,10 @@ Or
                         Threshold that will maximize a weighted average of our
                         precision and recall (default: 2)
   * `-h`, `--help`            show help message and exit
- 
+
 ## Training
 
-The _secret sauce_ of csvdedupe is human input. In order to figure out the best rules to deduplicate a set of data, you must give it a set of labeled examples to learn from. 
+The _secret sauce_ of csvdedupe is human input. In order to figure out the best rules to deduplicate a set of data, you must give it a set of labeled examples to learn from.
 
 The more labeled examples you give it, the better the deduplication results will be. At minimum, you should try to provide __10 positive matches__ and __10 negative matches__.
 
@@ -248,13 +260,13 @@ nosetests
 
 ### Combining and deduplicating files from different sources.
 
-Lets say we have a few sources of early childhood programs in Chicago and we'd like to get a canonical list. 
+Lets say we have a few sources of early childhood programs in Chicago and we'd like to get a canonical list.
 Let's do it with `csvdedupe`, `csvkit`, and some other common command line tools.
 
 #### Alignment and stacking
 Our first task will be to align the files and have the same data in the same columns for stacking.
 
-First let's look at the headers of the files
+First, let's look at the headers of the files.
 
 File 1
 ```console
@@ -268,8 +280,8 @@ File 2
 "Site name","Address","Zip Code","Phone","Fax","IDHS Provider ID"
 ```
 
-So, we'll have to add "Zip Code", "Fax", and "IDHS Provider ID" 
-to ```CPS_Early_Childhood_Portal_Scrape.csv```, and we'll have to add "Program Name", 
+So, we'll have to add "Zip Code", "Fax", and "IDHS Provider ID"
+to ```CPS_Early_Childhood_Portal_Scrape.csv```, and we'll have to add "Program Name",
 "Length of Day" to ```IDHS_child_care_provider_list.csv```.
 
 ```console
@@ -312,3 +324,22 @@ Let's sort the output by duplicate IDs, and we are ready to open it in your favo
 ```
 
 [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/88cda639ab635a100d23de5948ffbef5 "githalytics.com")](http://githalytics.com/datamade/csvdedupe)
+
+
+## Errors and Bugs
+
+If something is not behaving intuitively, it is a bug, and should be reported.
+Report it here: https://github.com/datamade/my-reps/issues
+
+## Patches and Pull Requests
+We welcome your ideas! You can make suggestions in the form of [github issues](https://github.com/datamade/django-councilmatic/issues) (bug reports, feature requests, general questions), or you can submit a code contribution via a pull request.
+
+How to contribute code:
+
+- Fork the project.
+- Make your feature addition or bug fix.
+- Send us a pull request with a description of your work! Don't worry if it isn't perfect - think of a PR as a start of a conversation, rather than a finished product.
+
+## Copyright and Attribution
+
+Copyright (c) 2016 DataMade. Released under the [MIT License](https://github.com/datamade/dedupe-examples/blob/master/LICENSE.md).
