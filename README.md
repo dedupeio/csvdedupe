@@ -29,7 +29,7 @@ pip install csvdedupe
 ## Getting Started
 
 ### csvdedupe
-
+---
 `csvdedupe` takes a messy input file or STDIN pipe and identifies duplicates. To get started, pick one of three deduping strategies: call `csvdedupe` with arguments, pipe your file using UNIX, or define a config file.
 
 Provide an input file, field names, and output file:
@@ -55,7 +55,7 @@ csvdedupe examples/csv_example_messy_input.csv \
             --config_file=config.json
 ```
 
-*Your config file may look like this:*
+**Your config file may look like this:**
 
 ```json
 {
@@ -74,7 +74,7 @@ csvdedupe examples/csv_example_messy_input.csv \
 }
 ```
 
-#### To us `csvdedupe` you absolutely need:
+#### To use `csvdedupe` you absolutely need:
 
   * `input` a CSV file name or piped CSV file to deduplicate
 
@@ -104,7 +104,7 @@ Or
 
 
 ### csvlink
-
+---
 `csvdedupe` takes two CSV files and finds matches between them.
 
 Provide an input file, field names, and output file:
@@ -141,7 +141,7 @@ csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
               --config_file=config.json
 ```
 
-*Your config file may look like this:*
+**Your config file may look like this:**
 
 ```json
 {
@@ -161,7 +161,7 @@ csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
 }
 ```
 
-#### To us `csvlink` you absolutely need:
+#### To use `csvlink` you absolutely need:
 
   * `input` two CSV file names to join together
 
@@ -323,7 +323,7 @@ Let's sort the output by duplicate IDs, and we are ready to open it in your favo
 > csvsort -c "Cluster ID" output.csv > sorted.csv
 ```
 
-[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/88cda639ab635a100d23de5948ffbef5 "githalytics.com")](http://githalytics.com/datamade/csvdedupe)
+<!-- [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/88cda639ab635a100d23de5948ffbef5 "githalytics.com")](http://githalytics.com/datamade/csvdedupe) -->
 
 
 ## Errors and Bugs
