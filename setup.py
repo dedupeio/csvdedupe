@@ -1,7 +1,8 @@
 from setuptools import setup
 import sys
 
-requirements = ['dedupe>=1.6']
+requirements = ['future>=0.14',
+                'dedupe>=1.6']
 
 if sys.version < '3':
     requirements += ['backports.csv']
