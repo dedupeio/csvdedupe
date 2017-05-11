@@ -238,7 +238,7 @@ class CSVCommand(object) :
         self.parser.add_argument('--recall_weight', type=int, 
             help='Threshold that will maximize a weighted average of our precision and recall')
         self.parser.add_argument('-d', '--delimiter', type=str,
-            help='Delimiting character of the input CSV file')
+            help='Delimiting character of the input CSV file', default=',')
         self.parser.add_argument('-v', '--verbose', action='count', default=0)
 
 
