@@ -21,10 +21,8 @@ import argparse
 
 def preProcess(column):
     """
-    Do a little bit of data cleaning with the help of
-    [AsciiDammit](https://github.com/tnajdek/ASCII--Dammit) and
-    Regex. Things like casing, extra spaces, quotes and new lines can
-    be ignored.
+    Do a little bit of data cleaning. Things like casing, extra spaces, 
+    quotes and new lines are ignored.
     """
     column = re.sub('  +', ' ', column)
     column = re.sub('\n', ' ', column)
