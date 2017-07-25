@@ -167,11 +167,11 @@ class CSVLink(csvhelpers.CSVCommand):
 
         if self.output_file:
             if sys.version < '3' :
-                with open(self.output_file, 'wb') as output_file:
+                with open(self.output_file, 'wb', encoding='utf-8') as output_file:
                     write_function(clustered_dupes, self.input_1, self.input_2,
                                    output_file, self.inner_join)
             else :
-                with open(self.output_file, 'w') as output_file:
+                with open(self.output_file, 'w', encoding='utf-8') as output_file:
                     write_function(clustered_dupes, self.input_1, self.input_2,
                                    output_file, self.inner_join)
         else:
