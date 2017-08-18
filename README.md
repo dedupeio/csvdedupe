@@ -16,7 +16,7 @@ Two easy commands:
 ## Installation and dependencies
 
 ```
-pip install csvdedupe
+pip install git+git://github.com/nacnudus/csvdedupe
 ```
 
 ## Getting Started

@@ -44,8 +44,16 @@ def readData(input_file, field_names, prefix=None):
     """
 
     data = {}
-    
-    reader = csv.DictReader(StringIO(input_file))
+
+    try:
+        with StringIO(input_file) as csvfile:
+            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            csvfile.close()
+        print("Got dialect")
+    except:
+        dialect = csv.excel
+
+    reader = csv.DictReader(StringIO(input_file), dialect = dialect)
     for i, row in enumerate(reader):
         clean_row = {k: preProcess(v) for (k, v) in row.items() if k is not None}
         if prefix:
