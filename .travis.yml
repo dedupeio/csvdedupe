@@ -2,6 +2,7 @@ sudo: false
 branches:
   only:
   - master
+  - "/^v.*$/"
 language: python
 notifications:
   email:
