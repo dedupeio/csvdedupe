@@ -93,7 +93,9 @@ Or
   * `--recall_weight RECALL_WEIGHT`
                         Threshold that will maximize a weighted average of our
                         precision and recall (default: 2)
-  * `-h`, `--help`            show help message and exit
+  * `-d`, `--delimiter`
+                        Delimiting character of the input CSV file (default: ,)
+  * `-h`, `--help`           show help message and exit
 
 
 ---
@@ -182,6 +184,8 @@ Or
   * `--recall_weight RECALL_WEIGHT`
                         Threshold that will maximize a weighted average of our
                         precision and recall (default: 2)
+  * `-d`, `--delimiter`
+                        Delimiting character of the input CSV file (default: ,)
   * `-h`, `--help`            show help message and exit
 
 ## Training

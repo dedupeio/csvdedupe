@@ -66,7 +66,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
         data_d = {}
         # import the specified CSV file
 
-        data_d = csvhelpers.readData(self.input, self.field_names)
+        data_d = csvhelpers.readData(self.input, self.field_names, delimiter=self.delimiter)
 
         logging.info('imported %d rows', len(data_d))
 

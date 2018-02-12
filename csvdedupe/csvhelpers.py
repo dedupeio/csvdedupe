@@ -32,7 +32,7 @@ def preProcess(column):
     return column
 
 
-def readData(input_file, field_names, prefix=None):
+def readData(input_file, field_names, delimiter=',', prefix=None):
     """
     Read in our data from a CSV file and create a dictionary of records, 
     where the key is a unique record ID and each value is a dict 
@@ -45,7 +45,7 @@ def readData(input_file, field_names, prefix=None):
 
     data = {}
     
-    reader = csv.DictReader(StringIO(input_file))
+    reader = csv.DictReader(StringIO(input_file),delimiter=delimiter)
     for i, row in enumerate(reader):
         clean_row = {k: preProcess(v) for (k, v) in row.items() if k is not None}
         if prefix:
@@ -205,6 +205,12 @@ class CSVCommand(object) :
         self.sample_size = self.configuration.get('sample_size', 1500)
         self.recall_weight = self.configuration.get('recall_weight', 1)
 
+        self.delimiter = self.configuration.get('delimiter',',')
+
+        # backports for python version below 3 uses unicode delimiters
+        if sys.version < '3':
+            self.delimiter = unicode(self.delimiter)
+
         if 'field_definition' in self.configuration:
             self.field_definition = self.configuration['field_definition']
         else :
@@ -229,6 +235,8 @@ class CSVCommand(object) :
             help='Number of random sample pairs to train off of')
         self.parser.add_argument('--recall_weight', type=int, 
             help='Threshold that will maximize a weighted average of our precision and recall')
+        self.parser.add_argument('-d', '--delimiter', type=str,
+            help='Delimiting character of the input CSV file', default=',')
         self.parser.add_argument('-v', '--verbose', action='count', default=0)
 
 

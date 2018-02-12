@@ -71,9 +71,11 @@ class CSVLink(csvhelpers.CSVCommand):
         # import the specified CSV file
 
         data_1 = csvhelpers.readData(self.input_1, self.field_names_1,
-                                     prefix='input_1')
+                                    delimiter=self.delimiter,
+                                    prefix='input_1')
         data_2 = csvhelpers.readData(self.input_2, self.field_names_2,
-                                     prefix='input_2')
+                                    delimiter=self.delimiter,
+                                    prefix='input_2')
 
         # sanity check for provided field names in CSV file
         for field in self.field_names_1:
