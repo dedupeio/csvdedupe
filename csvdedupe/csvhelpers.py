@@ -218,6 +218,9 @@ class CSVCommand(object) :
         else :
             self.field_definition = None
 
+        if self.skip_training and not os.path.exists(self.training_file):
+            raise self.parser.error(
+                "You need to provide an existing training_file or run this script without --skip_training")
 
     def _common_args(self) :
         # optional arguments
@@ -252,9 +255,6 @@ class CSVCommand(object) :
                          self.training_file)
             with open(self.training_file) as tf:
                 deduper.readTraining(tf)
-        elif self.skip_training:
-            raise self.parser.error(
-                "You need to provide an existing training_file or run this script without --skip_training")
 
         if not self.skip_training:
             logging.info('starting active labeling...')
