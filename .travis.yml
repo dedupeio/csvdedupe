@@ -17,6 +17,7 @@ script: nosetests
 deploy:
   provider: pypi
   user: datamade.wheelbuilder
+  skip_cleanup: true
   password:
     secure: PwqGZJ/EMfpOVl8AirG61wcZnyb760uHD9YhRokDVZYVgohfT7pHk9nsRUEmq6Bzh9eioMn4tqkqxIBrnCbwqzHLFLZMlC2/76oKSPs9NH17o7rup/lX8AyskLRUN49xG7WjU4U791IODwb8eAtN4sMkT9HtUKumVwhJlAyyp0Y=
   on:

@@ -9,7 +9,7 @@ if sys.version < '3':
 
 setup(
     name = "csvdedupe",
-    version = '0.1.16',
+    version = '0.1.17',
     description="Command line tools for deduplicating and merging csv files",
     author="Forest Gregg, Derek Eder",
     license="MIT",
