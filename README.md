@@ -11,7 +11,7 @@ Two easy commands:
 [Read more about csvdedupe on OpenNews Source](http://source.opennews.org/en-US/articles/introducing-cvsdedupe/)
 
 
-[![Build Status](https://travis-ci.org/datamade/csvdedupe.png?branch=master)](https://travis-ci.org/datamade/csvdedupe)
+[![Build Status](https://travis-ci.org/dedupeio/csvdedupe.png?branch=master)](https://travis-ci.org/dedupeio/csvdedupe)
 
 ## Installation and dependencies
 
@@ -323,10 +323,10 @@ Let's sort the output by duplicate IDs, and we are ready to open it in your favo
 ## Errors and Bugs
 
 If something is not behaving intuitively, it is a bug, and should be reported.
-Report it [here](https://github.com/datamade/csvdedupe/issues).
+Report it [here](https://github.com/dedupeio/csvdedupe/issues).
 
 ## Patches and Pull Requests
-We welcome your ideas! You can make suggestions in the form of [github issues](https://github.com/datamade/csvdedupe/issues) (bug reports, feature requests, general questions), or you can submit a code contribution via a pull request.
+We welcome your ideas! You can make suggestions in the form of [github issues](https://github.com/dedupeio/csvdedupe/issues) (bug reports, feature requests, general questions), or you can submit a code contribution via a pull request.
 
 How to contribute code:
 
@@ -336,4 +336,4 @@ How to contribute code:
 
 ## Copyright and Attribution
 
-Copyright (c) 2016 DataMade. Released under the [MIT License](https://github.com/datamade/csvdedupe/blob/master/LICENSE.md).
+Copyright (c) 2016 DataMade. Released under the [MIT License](https://github.com/dedupeio/csvdedupe/blob/master/LICENSE.md).
