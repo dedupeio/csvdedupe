@@ -11,7 +11,7 @@ python:
   - "2.7"
   - "3.4"
 install:
-  - pip install --use-mirrors -r requirements-test.txt
-  - python setup.py install
+  - pip install -r requirements-test.txt
+  - pip install -e .
 # command to run tests, e.g. python setup.py test
 script: nosetests
