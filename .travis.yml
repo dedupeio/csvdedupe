@@ -13,5 +13,6 @@ python:
 install:
   - pip install -r requirements-test.txt
   - pip install -e .
+  - csvdedupe examples/csv_example_messy_input.csv --field_names "Site name" Address Zip Phone --training_file foo.json --skip_training
 # command to run tests, e.g. python setup.py test
 script: nosetests
