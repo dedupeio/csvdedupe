@@ -7,13 +7,15 @@ import collections
 import logging
 from io import StringIO, open
 import sys
-from signal import signal, SIGPIPE, SIG_DFL
-signal(SIGPIPE, SIG_DFL)
+import platform
 if sys.version < '3' :
     from backports import csv
 else :
     import csv
 
+if platform.system() != 'Windows' :
+    from signal import signal, SIGPIPE, SIG_DFL
+    signal(SIGPIPE, SIG_DFL)
 
 import dedupe
 import json
