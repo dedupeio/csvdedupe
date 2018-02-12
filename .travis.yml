@@ -1,17 +1,23 @@
-sudo : false
+sudo: false
 branches:
   only:
-    - master
-
+  - master
 language: python
 notifications:
-  email: 
-      on_failure : change
+  email:
+    on_failure: change
 python:
-  - "2.7"
-  - "3.4"
+- '2.7'
+- '3.4'
 install:
-  - pip install -r requirements-test.txt
-  - pip install -e .
-# command to run tests, e.g. python setup.py test
+- pip install -r requirements-test.txt
+- pip install -e .
 script: nosetests
+deploy:
+  provider: pypi
+  user: datamade.wheelbuilder
+  password:
+    secure: PwqGZJ/EMfpOVl8AirG61wcZnyb760uHD9YhRokDVZYVgohfT7pHk9nsRUEmq6Bzh9eioMn4tqkqxIBrnCbwqzHLFLZMlC2/76oKSPs9NH17o7rup/lX8AyskLRUN49xG7WjU4U791IODwb8eAtN4sMkT9HtUKumVwhJlAyyp0Y=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
