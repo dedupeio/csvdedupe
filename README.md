@@ -53,7 +53,7 @@ csvdedupe examples/csv_example_messy_input.csv \
 ```json
 {
   "field_names": ["Site name", "Address", "Zip", "Phone"],
-  "field_definitions" : [{"field" : "Site name", "type" : "String"},
+  "field_definition" : [{"field" : "Site name", "type" : "String"},
                         {"field" : "Address", "type" : "String"},
                         {"field" : "Zip", "type" : "String",
                          "Has Missing" : true},
@@ -142,7 +142,7 @@ csvlink examples/restaurant-1.csv examples/restaurant-2.csv \
 {
   "field_names_1": ["name", "address", "city", "cuisine"],
   "field_names_2": ["restaurant", "street", "city", "type"],
-  "field_definitions" : [{"field" : "name", "type" : "String"},
+  "field_definition" : [{"field" : "name", "type" : "String"},
                         {"field" : "address", "type" : "String"},
                         {"field" : "city", "type" : "String",
                          "Has Missing" : true},
