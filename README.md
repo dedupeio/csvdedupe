@@ -100,7 +100,7 @@ Or
 
 ---
 ### csvlink
-`csvdedupe` takes two CSV files and finds matches between them.
+`csvlink` takes two CSV files and finds matches between them.
 
 Provide an input file, field names, and output file:
 ```bash
