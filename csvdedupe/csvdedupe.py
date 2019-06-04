@@ -48,7 +48,7 @@ class CSVDedupe(csvhelpers.CSVCommand) :
             except KeyError:
                 raise self.parser.error("You must provide field_names")
         else :
-            self.field_names = [self.field_def['field'] 
+            self.field_names = [field_def['field']
                                 for field_def in self.field_definition]
 
         self.destructive = self.configuration.get('destructive', False)
