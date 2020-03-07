@@ -2,14 +2,14 @@ from setuptools import setup
 import sys
 
 requirements = ['future>=0.14',
-                'dedupe>=1.6']
+                'dedupe>=1.6,<2']
 
 if sys.version < '3':
     requirements += ['backports.csv']
 
 setup(
     name = "csvdedupe",
-    version = '0.1.18',
+    version = '0.1.19',
     description="Command line tools for deduplicating and merging csv files",
     author="Forest Gregg, Derek Eder",
     license="MIT",
