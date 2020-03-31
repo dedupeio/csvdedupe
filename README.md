@@ -1,6 +1,8 @@
 # csvdedupe
 
-Command line tools for using the [dedupe python library](https://github.com/open-city/dedupe/) for deduplicating CSV files.
+Command line tools for using the [dedupe python library](https://github.com/dedupe.io/dedupe/) for deduplicating CSV files.
+
+Part of the [Dedupe.io](https://dedupe.io/) cloud service and open source toolset for de-duplicating and finding fuzzy matches in your data. For more details, see the [differences between Dedupe.io and the dedupe library](https://dedupe.io/documentation/should-i-use-dedupeio-or-the-dedupe-python-library.html).
 
 Two easy commands:
 
