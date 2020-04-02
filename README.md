@@ -190,6 +190,40 @@ Or
                         Delimiting character of the input CSV file (default: ,)
   * `-h`, `--help`            show help message and exit
 
+## Field Definitions & Types
+
+When providing a JSON config file, you can include definitions for each field that tell csvdedupe what _type_ of data the field contains. 
+
+A basic definition for a single field looks like this:
+
+    {"field": "name", "type": "String"}
+    
+The dedupe docs include a [handy reference of all types and what they mean](https://dedupe.io/developers/library/en/latest/Variable-definition.html).
+
+### Latitude & Longitude
+
+When working with geographic points, it's necessary to provide field defintions that match the format of your data. Otherwise, csvdedupe may treat your lat/long fields as text and match in an unexpected way. 
+
+* For **one field containing both latitude and longitude**, specify `LatLong` or `LongLat` depending on the order. This expects a field with the coordinates separated by some (any) non-numeric characters, so formats like `-122.23,46.42`, `-122.23, 46.42`, and `-122.23 46.42` will all work.
+
+        {
+          "field_names": ["coordinates"],
+          "field_definition" : [{"field" : "coordinates", "type" : "LatLong"}],
+          ...more config
+        }
+
+
+* For **latitude and longitude in separate fields**, include separate `Latitude` and `Longitude` definitions. Internally, these are squished together into a single `LatLong` field, so you'll see them as `__LatLong` when training.
+
+        {
+          "field_names": ["lat", "lng"],
+          "field_definition" : [
+            {"field" : "lat", "type" : "Latitude"},
+            {"field" : "lng", "type" : "Longitude"}
+          ],
+          ...more config
+        }
+
 ## Training
 
 The _secret sauce_ of csvdedupe is human input. In order to figure out the best rules to deduplicate a set of data, you must give it a set of labeled examples to learn from.
